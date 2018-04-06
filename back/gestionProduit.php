@@ -43,6 +43,10 @@ if ($_POST){ // if seul remplace le if(isset()) car renvoie lui aussi true ou fa
         $date_arrivee = new DateTime($_POST['date_arrivee']);
         $date_arrivee = $date_arrivee->format('Y-m-d');
     }
+    if (isset($_POST['date_depart'])) {
+        $date_depart = new DateTime($_POST['date_depart']);
+        $date_depart = $date_depart->format('Y-m-d');
+    }
 
     if (!isset($_POST['prix']) || !preg_match('#^[0-9]{1,3}$#', $_POST['prix'])) { // expression rationelle je ne veut pour le prix que des chiffres et j'en veux entre 1 et 3. 
 	 	$c .= '<div class="bg-danger"> Le prix est incorrecte.</div>';
@@ -54,10 +58,10 @@ if ($_POST){ // if seul remplace le if(isset()) car renvoie lui aussi true ou fa
         executeRequete(
                 "REPLACE INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_produit, :id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
                     array(
-                        'id_produit'        => $_POST['id_produit'],
+                        ':id_produit'       => $_POST['id_produit'],
                         ':id_salle' 		=> $_POST['id_salle'],
                         ':date_arrivee' 	=> $date_arrivee,
-                        ':date_depart' 		=> $_POST['date_depart'],
+                        ':date_depart' 		=> $date_depart,
                         ':prix' 		    => $_POST['prix'],
                     ));
     }  // !!!!!!!!!!!!!! En modification le produit redeviens automatiquement libre attention a voir control de cohérence !!!!!!!!!!!
@@ -136,14 +140,19 @@ if (isset($_GET['action']) && $_GET['action'] == 'modification' && isset($_GET['
 <form method="post" action="#"> 
 
     <!-- on insère en iden l'id du produit bien que autoincrémenté et non modifiable pour le récupérer dans le post et traiter les infos aprés -->
-    <input type="hidden" id="id_produit" name="id_produit" value="<?php echo $produit_actuel['id_produit'] ?? ''; ?>">
-
-    <label for="date_arrivee">Date d'arrivée</label><br>
-    <input type="date" class="datepicker" name="date_arrivee"  value="<?php echo $produit_actuel['date_arrivee'] ?? ''; ?>"><br><br>
     
+    <input type="hidden" id="id_produit" name="id_produit" value="<?php echo $produit_actuel['id_produit'] ?? ''; ?>">
+            <?php 
+            debug($_POST); 
+            ?>
+    <label for="date_arrivee">Date d'arrivée</label><br>
+    <input type="text" class="datepicker" name="date_arrivee"  value="<?php echo $produit_actuel['date_arrivee'] ?? ''; ?>"><br><br>
+            <?php 
+            debug($date_arrivee); 
+            ?>
     <label for="date_depart">Date de départ</label><br>
-    <input type="date" class="datepicker" name="date_depart"  value="<?php echo $produit_actuel['date_depart'] ?? ''; ?>"><br><br>
-
+    <input type="text" class="datepicker" name="date_depart"  value="<?php echo $produit_actuel['date_depart'] ?? ''; ?>"><br><br>
+            <?php debug($date_depart); ?>
     <label for="id_salle">Salle</label><br>
     <select name="id_salle">
         <?php 

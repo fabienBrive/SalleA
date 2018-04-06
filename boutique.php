@@ -56,6 +56,8 @@ $prixMin = true;
 $prixMax = true;
 $capacite = true;
 $compteur = 0;
+$date_arrivee = true;
+$date_depart = true;
 
 if(!empty($_POST)) {
 
@@ -84,12 +86,12 @@ if(!empty($_POST)) {
         $date_depart = 'date_depart <= "'. $date_depart . '"';
     }
 
-    //debug($date_arrivee);
-    //debug($date_depart);
+    debug($date_arrivee);
+    debug($date_depart);
     
-    $r = executeRequete("SELECT * FROM produit, salle WHERE salle.id_salle = produit.id_salle AND $categorie AND $ville AND $prixMin AND $prixMax AND $capacite AND $date_depart AND $date_arrivee");
+    $r = executeRequete("SELECT * FROM produit, salle WHERE salle.id_salle = produit.id_salle AND $categorie AND $ville AND $prixMin AND $prixMax AND $capacite AND $date_arrivee AND $date_depart");
    
-    //debug($r);
+    debug($r);
 
 
     while($produit_boutique = $r->fetch(PDO::FETCH_ASSOC)){

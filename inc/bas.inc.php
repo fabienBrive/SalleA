@@ -42,5 +42,12 @@ $( function() {
 
 });
 </script>
+
+<script>
+d = new Date();
+d = d->format('DD-MM-YYYY');
+$("#date_arrivee").val(d);
+</script>
+
 </html>
     

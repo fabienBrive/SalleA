@@ -4,6 +4,7 @@
 
     <meta charset="utf-8">
     <title>SalleA location de salle pour vos evenements sallea</title>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet"  href="<?php echo RACINE_SITE . 'inc/css/bootstrap.min.css'; ?>">
@@ -11,18 +12,16 @@
     <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/jquery-ui.min.css'; ?>">
 	<!-- boostrap shop homepage -->
     <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/shop-homepage.css'; ?>">
+    <!-- CSS de mon range -->
+    <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/jquery.range.css'; ?>">
 
     <script src="<?php echo RACINE_SITE . 'inc/js/jquery.js'; ?>"></script>
     <!-- Jquerry UI -->
     <script src="<?php echo RACINE_SITE . 'inc/js/jquery-ui.min.js'; ?>"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="<?php echo RACINE_SITE . 'inc/js/bootstrap.min.js'; ?>"></script>
-    
-    <script>
-        $( function() {
-            $( ".datepicker" ).datepicker();
-        } );
-    </script>
+    <!-- script range -->
+    <script src="<?php echo RACINE_SITE . 'inc/js/jquery.range.js'; ?>"></script>
 
 </head>
 

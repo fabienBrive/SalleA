@@ -21,6 +21,26 @@
     
 
 </body>
+<script>
+$( function() {
 
+    $( ".datepicker" ).datepicker({
+        dateFormat: "dd-mm-yy"
+    });
+        
+    $('.input').jRange({
+        from: 0,
+        to: 1000,
+        step: 10,
+        scale: [0,250,500,750,1000],
+        format: '%s',
+        width: 150,
+        showLabels: true,
+        isRange : true,
+        theme : "theme-blue"
+    });
+
+});
+</script>
 </html>
     

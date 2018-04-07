@@ -52,18 +52,28 @@ if ($_POST){ // if seul remplace le if(isset()) car renvoie lui aussi true ou fa
 	 	$c .= '<div class="bg-danger"> Le prix est incorrecte.</div>';
 	}
     
-    if (empty($c)){
-    
-        // Si pas d'erreur on envoie les données du POST en BDD :
-        executeRequete(
-                "REPLACE INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_produit, :id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
-                    array(
-                        ':id_produit'       => $_POST['id_produit'],
-                        ':id_salle' 		=> $_POST['id_salle'],
-                        ':date_arrivee' 	=> $date_arrivee,
-                        ':date_depart' 		=> $date_depart,
-                        ':prix' 		    => $_POST['prix'],
-                    ));
+    if (empty($c)){ // Si pas d'erreur on envoie les données du POST en BDD :
+        if (isset($_POST['id_produit'])){ // si il y a un id_produit c'est qu'on est en modification sinon on est en craetion de produit. Dans le premier cas id_prosuit présent dans l'autre abs pour qu'il s'auto incrémente
+           
+            executeRequete(
+                    "REPLACE INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_produit, :id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
+                        array(
+                            ':id_produit'       => $_POST['id_produit'],
+                            ':id_salle' 		=> $_POST['id_salle'],
+                            ':date_arrivee' 	=> $date_arrivee,
+                            ':date_depart' 		=> $date_depart,
+                            ':prix' 		    => $_POST['prix'],
+                        ));
+        } else {
+             executeRequete( // si pas id_produit c'est qu'on cré un produit donc on envoie pas en bdd l'id qui va s'auto incrémanter
+                    "REPLACE INTO produit (id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
+                        array(
+                            ':id_salle' 		=> $_POST['id_salle'],
+                            ':date_arrivee' 	=> $date_arrivee,
+                            ':date_depart' 		=> $date_depart,
+                            ':prix' 		    => $_POST['prix'],
+                        ));
+        }
     }  // !!!!!!!!!!!!!! En modification le produit redeviens automatiquement libre attention a voir control de cohérence !!!!!!!!!!!
 
 } // fin du if ($_POST)
@@ -71,7 +81,7 @@ if ($_POST){ // if seul remplace le if(isset()) car renvoie lui aussi true ou fa
 
 // ****************** table des produits envoyés dans $c pour affichage : ************************
 
-$r = executeRequete("SELECT * FROM produit"); // requête pour selectionner toutes les données de produit en base et les afficher dans un tableau
+$r = executeRequete("SELECT id_produit, id_salle, DATE_FORMAT(date_arrivee, '%d-%m-%Y') AS date_arrivée, DATE_FORMAT(date_depart, '%d-%m-%Y') AS date_depart, prix, etat  FROM produit"); // requête pour selectionner toutes les données de produit en base et les afficher dans un tableau
 
 $c .= '<h2>Gestion des Produits</h2>
             <p>Il y a actuellement ' . $r->rowcount() . ' produit en base de donnée.</p>' ;
@@ -129,7 +139,7 @@ echo $c;
 if (isset($_GET['action']) && $_GET['action'] == 'modification' && isset($_GET['id_produit'])){ // Si j'ai l'action = modification dans le GET alors ...
 
 
-	$r = executeRequete("SELECT * FROM produit WHERE id_produit = :id_produit", array(':id_produit' => $_GET['id_produit']));
+	$r = executeRequete("SELECT id_produit, id_salle, DATE_FORMAT(date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(date_depart, '%d-%m-%Y') AS date_depart, prix, etat FROM produit WHERE id_produit = :id_produit", array(':id_produit' => $_GET['id_produit']));
 			
     $produit_actuel = $r->fetch(PDO::FETCH_ASSOC); // pas de while car un seul produit
 }
@@ -140,19 +150,29 @@ if (isset($_GET['action']) && $_GET['action'] == 'modification' && isset($_GET['
 <form method="post" action="#"> 
 
     <!-- on insère en iden l'id du produit bien que autoincrémenté et non modifiable pour le récupérer dans le post et traiter les infos aprés -->
+    <?php if(isset($produit_actuel['id_produit'])){
+        echo'<input type="hidden" id="id_produit" name="id_produit" value="<?php echo $produit_actuel[id_produit]?>" >';
+    } ?>
     
-    <input type="hidden" id="id_produit" name="id_produit" value="<?php echo $produit_actuel['id_produit'] ?? ''; ?>">
-            <?php 
-            debug($_POST); 
-            ?>
+    <?php debug($_POST); ?>
+
     <label for="date_arrivee">Date d'arrivée</label><br>
-    <input type="text" class="datepicker" name="date_arrivee"  value="<?php echo $produit_actuel['date_arrivee'] ?? ''; ?>"><br><br>
-            <?php 
-            debug($date_arrivee); 
-            ?>
+    <input type="text" class="datepicker" name="date_arrivee"  <?php if (isset($produit_actuel['date_arrivee'])){
+                                                                            echo 'value="'. $produit_actuel['date_arrivee'] .'"';
+                                                                    } else{
+                                                                            echo 'placeholder="date d\'arrivée"';
+                                                                    }?>><br><br>
+                                                                        
+            <?php debug($date_arrivee); ?>
+
     <label for="date_depart">Date de départ</label><br>
-    <input type="text" class="datepicker" name="date_depart"  value="<?php echo $produit_actuel['date_depart'] ?? ''; ?>"><br><br>
+    <input type="text" class="datepicker" name="date_depart"   <?php if (isset($produit_actuel['date_depart'])){
+                                                                        echo 'value="'. $produit_actuel['date_depart'] .'"';
+                                                                    } else{
+                                                                        echo 'placeholder="date de départ"';
+                                                                    }?>><br><br>
             <?php debug($date_depart); ?>
+
     <label for="id_salle">Salle</label><br>
     <select name="id_salle">
         <?php 
@@ -165,7 +185,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'modification' && isset($_GET['
     </select><br><br>
 
     <label for="prix">Tarif</label><br>
-    <input type="text" id="prix" name="prix" value="<?php echo $produit_actuel['prix'] ?? ''?>"><br><br>
+    <input type="text" id="prix" name="prix" <?php if (isset($produit_actuel['prix'])){
+                                                        echo 'value="'. $produit_actuel['prix'] .'"';
+                                                    } else{
+                                                        echo 'placeholder="Indiquer ici le prix"';
+                                                    }?>><br><br>
+    
 
     <input type="submit" class="btn btn-outline-dark" value="Enregistrer">
 

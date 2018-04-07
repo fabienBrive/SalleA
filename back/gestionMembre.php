@@ -26,7 +26,7 @@ if (!empty($_POST)) { // Si le formulaire est posté, $_POST est remplie
 		$c .= '<div class="bg-danger"> le nom doit contenir entre 4 et 20 caractères.</div>';
 	}
 
-	if (!isset($_POST['prenom']) || strlen($_POST['prenom']) < 4 || strlen($_POST['prenom']) > 20) {
+	if (!isset($_POST['prenom']) || strlen($_POST['prenom']) < 3 || strlen($_POST['prenom']) > 20) {
 		$c .= '<div class="bg-danger"> le prénom doit contenir entre 4 et 20 caractères.</div>';
 	}
 
@@ -48,6 +48,7 @@ if (!empty($_POST)) { // Si le formulaire est posté, $_POST est remplie
 
 		//debug($membre->rowCount());
 
+		// Test pseudo
 		if($membre->rowcount() > 0 && $_GET['action'] != 'modifier' ) { // si la requête retourne au moins une ligne c'est que le pseudo existe déjà mais si on est en mode modifier le pseudo sera déjà en base donc dans ce cas on accepte de le modifier
 			
 			$c .= '<div class="bg-danger">Pseudo indisponible, veuillez en choisir un autre !</div>';
@@ -107,7 +108,7 @@ if(isset($_GET['action']) && $_GET['action'] == "modifier" && isset($_GET['id_me
 
 // 2. Prépa de l'affichage de la table :
 
-$r = executeRequete("SELECT * FROM membre");
+$r = executeRequete("SELECT id_membre, pseudo, mdp, nom, prenom, email, civilite, statut, DATE_FORMAT(date_enregistrement, '%d-%m-%Y %H:%i') AS date_enregistrement FROM membre");
 $c .= '<h2>Gestion des membres</h2>';
 $c .=  "Nombre de membre(s) : " . $r->rowCount();
 

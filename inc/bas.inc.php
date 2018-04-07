@@ -20,12 +20,11 @@
     <!-- /.container -->
     
 
-</body>
 <script>
 $( function() {
 
     $( ".datepicker" ).datepicker({
-        dateFormat: "dd-mm-yy"
+        dateFormat: "dd-mm-yy",
     });
         
     $('.input').jRange({
@@ -42,12 +41,8 @@ $( function() {
 
 });
 </script>
+</body>
 
-<script>
-d = new Date();
-d = d->format('DD-MM-YYYY');
-$("#date_arrivee").val(d);
-</script>
 
 </html>
     

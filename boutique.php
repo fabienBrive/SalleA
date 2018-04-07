@@ -40,11 +40,11 @@ for ($i = 10; $i > 0; $i-- ) {
 // Selecetion période :
     $c_gauche .= '<h3>Période</h3><br>';
 
-        $c_gauche .= '<label><h4>Date d\'arrivée</h4></label><br>';
-        $c_gauche .= '<input type="text" class="datepicker" name="date_arrivee" id="date_arrivee"><br><br>';
-        
-        $c_gauche .= '<label><h4>Date de départ</h4></label><br>';
-        $c_gauche .= '<input type="text" class="datepicker" name="date_depart" id="date_depart"><br><br>';
+        $c_gauche .= '<label for="date_depart"><h4>Date d\'arrivée</h4></label><br>';
+        $c_gauche .= '<input type="text" class="datepicker" name="date_arrivee" id="date_arrivee" value="date d\'arrivée"><br><br>';
+
+        $c_gauche .= '<label for="date_arrivee"><h4>Date de départ</h4></label><br>';
+        $c_gauche .= '<input type="text" class="datepicker" name="date_depart" id="date_depart" value="date de départ"><br><br>';
 
     $c_gauche .= '<input type="submit" value="Rechercher" class="btn"><br><br>';
 
@@ -59,7 +59,7 @@ $compteur = 0;
 $date_arrivee = true;
 $date_depart = true;
 
-if(!empty($_POST)) {
+if(isset($_POST)) {
 
     if (isset($_POST['categorie'])) {
         $categorie = "categorie IN ('". implode("','", $_POST['categorie']) ."')";
@@ -109,7 +109,7 @@ if(!empty($_POST)) {
         $c_droit .= '<p>'. $produit_boutique['description'] .'</p>';//descriptif
         $c_droit .= '<p>'. $date_arrivee .' au '. $date_depart .'</p><br>';//période
         $c_droit .= '<div></div><br>';//note
-        $c_droit .= '<a href="?id_produit='. $produit_boutique['id_produit'] .'" >Voir details</a><br><br>';//lien voir
+        $c_droit .= '<a href="front/ficheProduit.php?id_produit='. $produit_boutique['id_produit'] .'" >Voir details</a><br><br>';//lien voir
     $c_droit .= '</div>';
 
     $compteur++;

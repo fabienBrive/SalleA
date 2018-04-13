@@ -23,8 +23,12 @@
 <script>
 $( function() {
 
-    $( ".datepicker" ).datepicker({
+    $( "#date_arrivee" ).datepicker({
         dateFormat: "dd-mm-yy",
+    });
+    $( "#date_depart" ).datepicker({
+        dateFormat: "dd-mm-yy",
+        defaultDate : 31,
     });
         
     $('.input').jRange({

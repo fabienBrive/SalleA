@@ -12,15 +12,11 @@ $ficheProduit = $r->fetch(PDO::FETCH_ASSOC);
 debug($ficheProduit);
 
 
+$adresse = '';
 
-
-
-
-
-
-
-
-
+$adresse = $ficheProduit['adresse'].' '.$ficheProduit['cp'].' '.$ficheProduit['ville'].' '.$ficheProduit['pays'];
+$adresse = str_replace(' ','+',$adresse);
+debug($adresse);
 // ----------------------- AFFICHAGE ----------------------------------------
 
 require_once('../inc/haut.inc.php');
@@ -41,6 +37,9 @@ require_once('../inc/haut.inc.php');
     </div>
     <div><!-- Localisation -->
         <h4>Localisation</h4>
+        <div >
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2618.228603518832!2d2.1873524155022226!3d48.98720689958211!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e660d104da244d%3A0xae034d2fe4341b5c!2s<?php echo $adresse?>!5e0!3m2!1sfr!2sfr!4v1523308963736" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
         <img src="" alt=""></img>
     </div>
     <div><!-- info complémentaires -->

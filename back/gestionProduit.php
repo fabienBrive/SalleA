@@ -12,33 +12,14 @@ if (!internauteEstConnecteEtEstAdmin()) { // par sécurité on vérifie que l'in
 }
 
 
-// **************SUPPRESSION DU PRODUIT EN BDD ********************:
-
-if(isset($_GET['action']) && $_GET['action'] == 'suppression' && isset($_GET['id_produit'])){ // si on a action = suppression dans l'URL (en GET) on attrape l'id
-	// on fait la requête avec l'ID du GET
-	$r = executeRequete("SELECT * FROM produit WHERE id_produit = :id_produit", array(':id_produit'=>$_GET['id_produit']));
-    // Si il y a bien une ligne on la delete sinon message erreur.
-	if ($r->rowCount() == 1) {
-		// Ici le produit existe
-		$supprime = $r->fetch(PDO::FETCH_ASSOC); // Pas de boucle car je suis sur de n'avoir qu'un seul produit (selection par l'id)
-
-		executeRequete("DELETE FROM produit WHERE id_produit = :id_produit", array(':id_produit' => $_GET['id_produit']));
-		$c .= '<div class="bg-success">Produit supprimé !</div>';
-	} 
-	else {
-			// ici le produit n'existe pas
-			$c .='<div class="bg-danger">Produit inexistant !</div>';
-	}
-	$_GET['action'] = 'affichage'; // afficher automatiquement le tableau des produits aprés suppression
-}
 
 
 // *************** traitement du formulaire (affichage en HTML dans la partie d'affichage) *****************************
 
 if ($_POST){ // if seul remplace le if(isset()) car renvoie lui aussi true ou false en fonction de l'existence de $_POST
     // On entre donc dans cette condition que si le formulaire a été posté
-
-//  !!!!!!!!!!!!!!!!!!!!   Sécurisation du post a terminer pour dates et selecteur dynamique !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+    //  !!!!!!!!!!!!!!!!!!!!   Sécurisation du post a terminer pour dates et selecteur dynamique !!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if(isset($_POST['date_arrivee'])){
         $date_arrivee = new DateTime($_POST['date_arrivee']);
         $date_arrivee = $date_arrivee->format('Y-m-d');
@@ -47,38 +28,57 @@ if ($_POST){ // if seul remplace le if(isset()) car renvoie lui aussi true ou fa
         $date_depart = new DateTime($_POST['date_depart']);
         $date_depart = $date_depart->format('Y-m-d');
     }
-
+    
     if (!isset($_POST['prix']) || !preg_match('#^[0-9]{1,3}$#', $_POST['prix'])) { // expression rationelle je ne veut pour le prix que des chiffres et j'en veux entre 1 et 3. 
-	 	$c .= '<div class="bg-danger"> Le prix est incorrecte.</div>';
+        $c .= '<div class="bg-danger"> Le prix est incorrecte.</div>';
 	}
     
     if (empty($c)){ // Si pas d'erreur on envoie les données du POST en BDD :
         if (isset($_POST['id_produit'])){ // si il y a un id_produit c'est qu'on est en modification sinon on est en craetion de produit. Dans le premier cas id_prosuit présent dans l'autre abs pour qu'il s'auto incrémente
-           
+            
             executeRequete(
-                    "REPLACE INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_produit, :id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
-                        array(
-                            ':id_produit'       => $_POST['id_produit'],
-                            ':id_salle' 		=> $_POST['id_salle'],
-                            ':date_arrivee' 	=> $date_arrivee,
-                            ':date_depart' 		=> $date_depart,
-                            ':prix' 		    => $_POST['prix'],
-                        ));
+                "REPLACE INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_produit, :id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
+                array(
+                    ':id_produit'       => $_POST['id_produit'],
+                    ':id_salle' 		=> $_POST['id_salle'],
+                    ':date_arrivee' 	=> $date_arrivee,
+                    ':date_depart' 		=> $date_depart,
+                    ':prix' 		    => $_POST['prix'],
+            ));
         } else {
-             executeRequete( // si pas id_produit c'est qu'on cré un produit donc on envoie pas en bdd l'id qui va s'auto incrémanter
-                    "REPLACE INTO produit (id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
-                        array(
-                            ':id_salle' 		=> $_POST['id_salle'],
-                            ':date_arrivee' 	=> $date_arrivee,
-                            ':date_depart' 		=> $date_depart,
-                            ':prix' 		    => $_POST['prix'],
-                        ));
+            executeRequete( // si pas id_produit c'est qu'on cré un produit donc on envoie pas en bdd l'id qui va s'auto incrémanter
+                "REPLACE INTO produit (id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_salle, :date_arrivee, :date_depart, :prix, 'libre' )", 
+                array(
+                    ':id_salle' 		=> $_POST['id_salle'],
+                    ':date_arrivee' 	=> $date_arrivee,
+                    ':date_depart' 		=> $date_depart,
+                    ':prix' 		    => $_POST['prix'],
+            ));
         }
     }  // !!!!!!!!!!!!!! En modification le produit redeviens automatiquement libre attention a voir control de cohérence !!!!!!!!!!!
-
+            
 } // fin du if ($_POST)
+        
+// **************SUPPRESSION DU PRODUIT EN BDD ********************:
 
+if(isset($_GET['action']) && $_GET['action'] == 'suppression' && isset($_GET['id_produit'])){ // si on a action = suppression dans l'URL (en GET) on attrape l'id
+    // on fait la requête avec l'ID du GET
+    $r = executeRequete("SELECT * FROM produit WHERE id_produit = :id_produit", array(':id_produit'=>$_GET['id_produit']));
+    // Si il y a bien une ligne on la delete sinon message erreur.
+    if ($r->rowCount() == 1) {
+        // Ici le produit existe
+        $supprime = $r->fetch(PDO::FETCH_ASSOC); // Pas de boucle car je suis sur de n'avoir qu'un seul produit (selection par l'id)
 
+        executeRequete("DELETE FROM produit WHERE id_produit = :id_produit", array(':id_produit' => $_GET['id_produit']));
+        $c .= '<div class="bg-success">Produit supprimé !</div>';
+    } 
+    else {
+            // ici le produit n'existe pas
+            $c .='<div class="bg-danger">Produit inexistant !</div>';
+    }
+    $_GET['action'] = 'affichage'; // afficher automatiquement le tableau des produits aprés suppression
+}
+        
 // ****************** table des produits envoyés dans $c pour affichage : ************************
 
 $r = executeRequete("SELECT id_produit, id_salle, DATE_FORMAT(date_arrivee, '%d-%m-%Y') AS date_arrivée, DATE_FORMAT(date_depart, '%d-%m-%Y') AS date_depart, prix, etat  FROM produit"); // requête pour selectionner toutes les données de produit en base et les afficher dans un tableau

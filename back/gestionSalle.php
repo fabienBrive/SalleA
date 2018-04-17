@@ -10,6 +10,39 @@ require_once('../inc/init.inc.php');
 	}
 	
 	
+	// Suppression de la salle + traitement photo :
+	if(isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id_salle'])){
+		// Si les indices "action" et "id_produit", c'est que l'url est complète
+		
+		$resultat = executeRequete("SELECT photo FROM salle WHERE id_salle = :id_salle", array('id_salle'=> $_GET['id_salle']));
+		
+		if ($resultat->rowCount() == 1) {
+			// Ici le produit existe
+			$photo_a_supprimer = $resultat->fetch(PDO::FETCH_ASSOC);
+			if (!empty($photo_a_supprimer['photo'])){
+				// Si il y a une photo dans la bdd on peut la supprimer photo physique:
+
+				$chemin_photo_a_supprimer = $_SERVER['DOCUMENT_ROOT'] . RACINE_SITE . $photo_a_supprimer['photo'];
+				// ce qui donne : c:/wamp64/www/PHP/08-site/photo/nomphoto.jpg
+				
+				if(file_exists($chemin_photo_a_supprimer)) unlink($chemin_photo_a_supprimer);
+			}
+			executeRequete("DELETE FROM salle WHERE id_salle = :id_salle", array(':id_salle' => $_GET['id_salle']));
+			$c .= '<div class="bg-success">Produit supprimé !</div>';
+		}
+		
+	}
+	
+	// 4 Modification de la salle :
+	
+	if(isset($_GET['action']) && $_GET['action'] == "modifier" && isset($_GET['id_salle'])){
+	
+			$r = executeRequete("SELECT * FROM salle WHERE id_salle = :id_salle",array(':id_salle' => $_GET['id_salle']));
+	
+			$salle_actuel = $r->fetch(PDO::FETCH_ASSOC);
+	
+	}
+	
 	//traitement du POST: 
 	if (!empty($_POST)){
 		
@@ -24,7 +57,7 @@ require_once('../inc/init.inc.php');
 			$c .= '<div class="bg-danger"> la ville doit contenir entre 4 et 20 caractères.</div>';
 		}
 	
-		if (!isset($_POST['capacite']) || !preg_match('#^[0-9]{3}$#', $_POST['capacite'])) { // Expression rationnelle entre '#' débute par '^' et termine par '$' on admet les caratères chiffres de 0 à 9 ([0-9]) au nombre précis de 5 ({5}).
+		if (!isset($_POST['capacite']) || !preg_match('#^[0-9]{1,3}$#', $_POST['capacite'])) { // Expression rationnelle entre '#' débute par '^' et termine par '$' on admet les caratères chiffres de 0 à 9 ([0-9]) au nombre précis de 5 ({5}).
 		// preg_match() retourne 1 = true si le code correspond à l'expression rationnelle sinon 0 = false.
 			 $c .= '<div class="bg-danger"> Le code postal est incorrecte.</div>';
 		}
@@ -37,17 +70,31 @@ require_once('../inc/init.inc.php');
 		// preg_match() retourne 1 = true si le code correspond à l'expression rationnelle sinon 0 = false.
 			 $c .= '<div class="bg-danger"> Le code postal est incorrecte.</div>';
 		}
-	
+		$photo =''; // Déclaration de la variable endehors de la condition
+		$photo_tmp = '';
+		$photo_dur='';// pour debug
+
+		if(!empty($_FILES['photo']['name'])){ // traitement de la photo
+
+				$photo = 'img/' . $_POST['ville'] . '_' . $_FILES['photo']['name']; // On renomme la photo uploadée avec le nom de la ville pour limiter le risque de doublon dans les noms. On ajoute le chemin d'acces au dossier /img/.
+
+				$photo_tmp = $_FILES['photo']['tmp_name']; // emplacement dans le fichier tmp du serveur (emplacement standard aprés upload)
+
+				$photo_dur = $_SERVER['DOCUMENT_ROOT'] . RACINE_SITE . $photo; // chemin final complet depuis c: jusqu'a img.
+
+				copy($photo_tmp, $photo_dur);// bascule de la photo du fichier temporaire au fichier img.
+		}
+		
 	
 		// Si pas d'erreur dans $contenu, on verifie l'unicité du pseudo en base de données puis on fait l'inscription :
 		if (empty($c)){
 			//si contenu est vide c'est qu'il n'y a pas d'erreur
 	
-			$salle = executeRequete("SELECT * FROM salle WHERE titre = :titre", array(':titre' => $_POST['titre'])); // On fait cette requête pour vérifier la disponiblité du pseudo
+			$salle = executeRequete("SELECT * FROM salle WHERE titre = :titre", array(':titre' => $_POST['titre'])); // On fait cette requête pour vérifier la disponiblité du titre
 	
 			//debug($membre->rowCount());
 	
-			if($salle->rowcount() > 0) {
+			if($salle->rowcount() > 0 && $_GET['action'] != 'modififier') {
 				//si la requête retourne au mpoins une ligne c'est que le pseudo existe déjà
 				$c .= '<div class="bg-danger">Titre indisponible, veuillez en choisir un autre !</div>';
 			}else {
@@ -58,7 +105,7 @@ require_once('../inc/init.inc.php');
 					array(
 						':titre' 			=> $_POST['titre'],
 						':description' 		=> $_POST['description'],
-						':photo' 			=> $_POST['photo'],
+						':photo' 			=> $photo,
 						':pays' 			=> $_POST['pays'],
 						':ville' 			=> $_POST['ville'],
 						':adresse' 			=> $_POST['adresse'],
@@ -70,29 +117,13 @@ require_once('../inc/init.inc.php');
 	
 				$c .= '<div class="bg-success">La salle a bien été enregistrée.</div>';
 	
-			}
-		}
+			} //fin de la verif nom salle
+		} // fin du if (empty($c)) 
 	
 	} // fin du if (!isset($_POST)) 
 	
 
-
-	// 3- Suppression d'un membre :
-if(isset($_GET['action']) && $_GET['action'] == "supprimer" && isset($_GET['id_salle'])){ // suppression dans le GET
-
-		executeRequete("DELETE FROM salle WHERE id_salle = :id_salle", array(':id_salle' => $_GET['id_salle']));
 	
-}
-
-// 4 Modification du membre :
-
-if(isset($_GET['action']) && $_GET['action'] == "modifier" && isset($_GET['id_salle'])){
-
-		$r = executeRequete("SELECT * FROM salle WHERE id_salle = :id_salle",array(':id_salle' => $_GET['id_salle']));
-
-		$salle_actuel = $r->fetch(PDO::FETCH_ASSOC);
-
-}
 	
 	// Préparation de l'affichage de la table:
 
@@ -144,7 +175,7 @@ require_once('../inc/haut.inc.php');
 echo $c;
 
 ?>
-<form action="#" method="post">
+<form action="#" method="post" enctype="multipart/form-data">
 
 	<div class="formulaireGauche col-md-6">
 		<input type="hidden" id="id_salle" name="id_salle" value="<?php echo $salle_actuel['id_salle'] ?? 0; ?>" >
@@ -167,22 +198,26 @@ echo $c;
 		<br><br>
 
 		<label for="photo">Photo</label><br>
-		<input type="file" id="photo" name="photo" <?php 
-		if (isset($salle_actuel['photo'])){
-			echo 'value="'. $salle_actuel['photo'].'"'; 
-		} else {
-			echo 'placeholder="Prenom du membre"';
-		}?>><br><br>
+		<input type="file" id="photo" name="photo"><br><br>
+		<?php 
+			if (isset($salle_actuel['photo'])) {
+				// En cas de modification on affiche la photo actuellement en BDD :
+			echo '<i>Vous pouvez uploader une nouvelle photo.</i><br>';
+			echo '<p>Photo actuelle : </p>';
+			echo '<img src="../'. $salle_actuel['photo'] .'" width="90" height="90"><br>';
+			echo '<input type="hidden" name="photo_actuelle" value="'. $salle_actuel['photo'] .'"><br>';// Renseigne $_POST['photo_actuelle'] qui remplace en BDD l'ancienne photo
+			}
+			 ?>
 
 		<label for="capacite">Capacité</label><br>
 		<select id="capacite" name="capacite"> 
 		<?php 
-		for ($i = 1; $i * 5 <= 300; $i++ ){
-			echo '<option value="'. $i*5 .'"';
-			if (isset($salle_actuel['capacite']) && ($i*5 == $salle_actuel['capacite'])){
+		for ($i = 1; $i <= 125; $i++ ){
+			echo '<option value="'. $i .'"';
+			if (isset($salle_actuel['capacite']) && ($i == $salle_actuel['capacite'])){
 				echo 'selected'; 
 			}
-			echo '>'. $i * 5 .'</option>';
+			echo '>'. $i .'</option>';
 		}?>
 		</select>
 		<br><br>

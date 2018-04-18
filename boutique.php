@@ -97,13 +97,13 @@ if(isset($_POST)) {
         }
     }
 
-    debug($date_arrivee);
-    debug($date_depart);
+    //debug($date_arrivee);
+    //debug($date_depart);
     
     $r = executeRequete("SELECT CURRENT_DATE AS date_jour, s.id_salle, s.titre, s.description, s.photo, s.ville, s.categorie, s.capacite, p.prix, p.date_arrivee, p.date_depart, p.id_produit FROM produit p, salle s WHERE s.id_salle = p.id_salle AND p.etat = 'libre' AND $categorie AND $ville AND $prixMin AND $prixMax AND $capacite AND $date_arrivee AND $date_depart ");
    
-    debug($r);
-    debug(date("Y-m-d"));
+    //debug($r);
+    //debug(date("Y-m-d"));
 
 
     while($produit_boutique = $r->fetch(PDO::FETCH_ASSOC)){
@@ -117,7 +117,7 @@ if(isset($_POST)) {
         $date_depart = $date_depart->format('d-m-Y');
 
         $c_droit .= '<div class="col-md-4">';//div par produit
-            $c_droit .= '<img src="'. $produit_boutique['photo'] .'" title="'. $produit_boutique['titre'] .'" alt="'. $produit_boutique['titre'] .'"><br>';//image
+            $c_droit .= '<img src="'. $produit_boutique['photo'] .'" title="'. $produit_boutique['titre'] .'" alt="'. $produit_boutique['titre'] .'"height="175" width="250"><br>';//image
             $c_droit .= '<h3>'. $produit_boutique['titre'] .'</h3>';//titre
             $c_droit .= '<h4>'. $produit_boutique['prix'] .' €</h4>';//prix
             $c_droit .= '<p>'. $produit_boutique['description'] .'</p>';//descriptif

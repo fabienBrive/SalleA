@@ -134,11 +134,11 @@ $c .=  '<table class="table">
 			
 				}
 				$c .= '<td>';
-				$c .=  '<a href="../front/profil.php?action=voir&id_membre=' . $membre['id_membre'] . '&statut='. $membre['statut'] .'"><span><img src="../img/glyphicons/loupe.png" alt="loupe" title="Voir profil"></span></a>';
+				$c .=  '<a href="../front/profil.php?action=voir&id_membre=' . $membre['id_membre'] . '&statut='. $membre['statut'] .'"><span><img src="../img/glyphicons/loupe.png" alt="loupe" title="Voir profil"></span></a>|';
 				
+				$c .=  '<a href="?action=supprimer&id_membre=' . $membre['id_membre'] . '" onclick="return(confirm(\'Etes-vous sûr de vouloir supprimer ce membre? \'));"><span><img src="../img/glyphicons/poubelle.png" alt="poubelle" title="supprimer"></span></a>|';
+
 				$c .=  '<a href="?action=modifier&id_membre=' . $membre['id_membre'] . '" onclick="return(confirm(\' Etes-vous certain de vouloir modifier ce membre? Cela implique nécessairement de définir un nouveau mot de passe. \'));"><span><img src="../img/glyphicons/crayon.png" alt="crayon" title="modifier"></span></a>';
-				
-				$c .=  '<a href="?action=supprimer&id_membre=' . $membre['id_membre'] . '" onclick="return(confirm(\'Etes-vous sûr de vouloir supprimer ce membre? \'));"><span><img src="../img/glyphicons/poubelle.png" alt="poubelle" title="supprimer"></span></a>';
 				
 				$c .=  '</td>';
 				

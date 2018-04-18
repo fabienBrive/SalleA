@@ -76,7 +76,13 @@ require_once('../inc/init.inc.php');
 		$photo_tmp = '';
 		$photo_dur='';
 
-		if(!empty($_FILES['photo']['name'])){ // traitement de la photo :
+		// 5-Traitement de la photo lors de la modif:
+		if (isset($_GET['action']) && $_GET['action'] == 'modification') {
+			// si je modifie le produit, je prend la photo actuelle que je remet en BDD :
+			$photo_bdd = $_POST['photo_actuelle'];
+		} 
+
+		if(!empty($_FILES['photo']['name'])){ // traitement photo : création chemin copy photo physique de dossier tmp vers dossier site :
 
 				$photo = 'img/' . $_POST['ville'] . '_' . $_FILES['photo']['name']; // On renomme la photo uploadée avec le nom de la ville pour limiter le risque de doublon dans les noms. On ajoute le chemin d'acces au dossier /img/.
 
@@ -94,13 +100,10 @@ require_once('../inc/init.inc.php');
 	
 			$salle = executeRequete("SELECT * FROM salle WHERE titre = :titre", array(':titre' => $_POST['titre'])); // On fait cette requête pour vérifier la disponiblité du titre
 	
-			//debug($membre->rowCount());
+			//debug($salle->rowCount());
 	
-			// if($salle->rowcount() > 0 && $_GET['action'] != 'modififier') {
-			// 	//si la requête retourne au mpoins une ligne c'est que le pseudo existe déjà
-			// 	$c .= '<div class="bg-danger">Titre indisponible, veuillez en choisir un autre !</div>';
-			// }else {
-				// Sinon on peut inscrire le membre en BDD :
+			if(($salle->rowcount() === 0) || (($salle->rowcount() == 1) && (isset($_GET['action'])) && ($_GET['action'] == 'modifier'))) {
+				//si la requête retourne une ligne c'est que le pseudo existe déjà, on autorise cela uniquement si on est en modification.
 					
 				executeRequete(
 				"REPLACE INTO salle (id_salle, titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (:id_salle, :titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)", 
@@ -114,13 +117,16 @@ require_once('../inc/init.inc.php');
 						':adresse' 			=> $_POST['adresse'],
 						':cp' 				=> $_POST['cp'],
 						':capacite' 		=> $_POST['capacite'],
-						':categorie' 		=> $_POST['categorie'],
+						':categorie' 		=> $_POST['categorie']
 					)
 				);
 	
 				$c .= '<div class="bg-success">La salle a bien été enregistrée.</div>';
 	
-			//} //fin de la verif nom salle
+			} else {
+				$c .= '<div class="bg-danger">Titre indisponible, veuillez en choisir un autre !</div>';
+			} // fin rowcount()
+
 		} // fin du if (empty($c)) 
 	
 	} // fin du if (!isset($_POST)) 
@@ -150,14 +156,19 @@ $c .=  '<table class="table">
 		// Affichage des lignes :
 		while ($salle = $r->fetch(PDO::FETCH_ASSOC)){
 			$c .=  '<tr>';
-				foreach ($salle as $indice => $information){
+				foreach ($salle as $indice => $info){
 
-					if ($indice != 'mdp') $c .=  '<td>' . $information . '</td>';
+					if ($indice == 'mdp') {
 			
-				}
+					} elseif ($indice == 'photo') {
+						$c .= '<td><img src="../'. $info .'" width="90" height="75"></td>';
+					}else{
+						$c .=  '<td>' . $info . '</td>';
+					}
+				}	
 				$c .= '<td>';
 
-				$c .=  '<a href="?action=modifier&id_salle=' . $salle['id_salle'] . '"><span><img src="../img/glyphicons/crayon.png" alt="crayon" title="modifier"></span></a>';
+				$c .=  '<a href="?action=modifier&id_salle=' . $salle['id_salle'] . '"><span><img src="../img/glyphicons/crayon.png" alt="crayon" title="modifier"></span></a>|';
 				
 				$c .=  '<a href="?action=supprimer&id_salle=' . $salle['id_salle'] . '" onclick="return(confirm(\'Etes-vous sûr de vouloir supprimer cette salle? \'));"><span><img src="../img/glyphicons/poubelle.png" alt="poubelle" title="supprimer"></span></a>';
 				

@@ -9,16 +9,16 @@ $suggestion = '';
 
 //****************Traitement pour affichage de la page produit******************  */
 
-$r = executeRequete("SELECT s.titre, s.description, s.photo, s.pays, s.ville, s.adresse, s.cp, s.capacite, s.categorie, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix FROM produit p, salle s WHERE s.id_salle = p.id_salle AND p.id_produit = :id_produit",array(':id_produit' => $_GET['id_produit']));
+$r = executeRequete("SELECT p.id_produit, s.titre, s.description, s.photo, s.pays, s.ville, s.adresse, s.cp, s.capacite, s.categorie, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix FROM produit p, salle s WHERE s.id_salle = p.id_salle AND p.id_produit = :id_produit",array(':id_produit' => $_GET['id_produit']));
 
 
 $ficheProduit = $r->fetch(PDO::FETCH_ASSOC);
-debug($ficheProduit);
+//debug($ficheProduit);
 
 
 $adresse = $ficheProduit['adresse'].' '.$ficheProduit['cp'].' '.$ficheProduit['ville'].' '.$ficheProduit['pays'];
 $adresse = str_replace(' ','+',$adresse);
-debug($adresse);
+//debug($adresse);
 
 
 
@@ -34,7 +34,7 @@ while ($p_similaire = $res->fetch(PDO::FETCH_ASSOC)){
 
  	//debug($resultat_suggestion);
  	$suggestion .= '<div class="col-md-3"> 
- 					<a href="?id_produit='. $p_similaire['id_produit'] .'"><img src="'. $p_similaire['photo'] .'"  class="img-responsive"></a>
+ 					<a href="?id_produit='. $p_similaire['id_produit'] .'"><img src="../'. $p_similaire['photo'] .'"  class="img-responsive"></a>
  					</div>';
 }
 
@@ -58,7 +58,7 @@ require_once('../inc/haut.inc.php');
 
     <div class="row">
         <div class="col-md-8"><!-- photo -->
-            <img class="img-responsive" src="<?php echo '../'.$ficheProduit['photo'];?>" alt="photo<?php echo $ficheProduit['titre'];?>">
+            <img src="<?php echo '../'.$ficheProduit['photo'];?>" alt="photo<?php echo $ficheProduit['titre'];?>" height="500" width="100%">
         </div>
 
         <div class="col-md-4"><!-- description -->
@@ -96,8 +96,9 @@ require_once('../inc/haut.inc.php');
         </div>
     </div><!-- .row -->
 </div><!-- Fin Partie haute Affichage produit -->
-
+<hr>
 <div><!-- Partie basse Autres produit -->
+    <h3>Autres Produits</h3>
 
     <?php echo $suggestion; ?>
 

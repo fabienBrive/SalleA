@@ -81,7 +81,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'suppression' && isset($_GET['id
         
 // ****************** table des produits envoyés dans $c pour affichage : ************************
 
-$r = executeRequete("SELECT id_produit, id_salle, DATE_FORMAT(date_arrivee, '%d-%m-%Y') AS date_arrivée, DATE_FORMAT(date_depart, '%d-%m-%Y') AS date_depart, prix, etat  FROM produit"); // requête pour selectionner toutes les données de produit en base et les afficher dans un tableau
+$r = executeRequete("SELECT p.id_produit, p.id_salle, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix, p.etat, s.titre, s.photo FROM produit p, salle s WHERE s.id_salle = p.id_salle"); // requête pour selectionner toutes les données de produit en base et les afficher dans un tableau
 
 $c .= '<h2>Gestion des Produits</h2>
             <p>Il y a actuellement ' . $r->rowcount() . ' produit en base de donnée.</p>' ;
@@ -91,31 +91,33 @@ $c .= '<table class="table table-dark">';
 
 //affichage des en-têtes :
     $c .='<tr>';
-			for($i=0; $i < $r->columnCount(); $i++){
-				$colonne = $r->getColumnMeta($i);
-                $c .= '<th scope="col">' . $colonne['name'] . '</th>'; 
-			}
-			$c .= '<th scope="col">Actions</th>';
+			$c .= '<th>id produit</th>';
+			$c .= '<th>date d\'arrivée</th>';
+			$c .= '<th>date de départ</th>';
+			$c .= '<th>id salle</th>';
+			$c .= '<th>prix</th>';
+            $c .= '<th>etat</th>';
+			$c .= '<th>Actions</th>';
     $c .='</tr>';
     
-// Affichage des lignes :
-    while($ligne = $r->fetch(PDO::FETCH_ASSOC)){ // on transforme le resultat de la requête (objet PDOStatement) en un array que l'on parcours ligne par ligne avec la boucle while
+// Affichage des produit :
+    while($produit = $r->fetch(PDO::FETCH_ASSOC)){ // on transforme le resultat de la requête (objet PDOStatement) en un array que l'on parcours ligne par ligne avec la boucle while
+        //debug($produit);
         $c .= '<tr>';
-            foreach ($ligne as $indice => $info){
-                if ($indice == 'id_produit'){
-						$c .= '<th scope="col">'. $info .'</th>';
-					} else {
-                        $c .= '<td>' . $info . '</td>';
-                }
-            }
+            $c .= '<td>'. $produit['id_produit'] .'</td>';           
+            $c .= '<td>'. $produit['date_arrivee'] .'</td>';           
+            $c .= '<td>'. $produit['date_depart'] .'</td>';           
+            $c .= '<td>'. $produit['id_salle'] .' - '. $produit['titre'] .'<br><img src="../'. $produit['photo'] .'" alt="photo salle" height="60" width="90"></td>';           
+            $c .= '<td>'. $produit['prix'] .' €</td>';           
+            $c .= '<td>'. $produit['etat'] .'</td>';           
             // pour chaque ligne de produit 
             $c .= '<td>
                         
-                        <a href="../front/ficheProduit.php?action=voir&id_produit='. $ligne['id_produit'] .'"> Voir </a>
+                        <a href="../front/ficheProduit.php?action=voir&id_produit='. $produit['id_produit'] .'"><span><img src="../img/glyphicons/loupe.png" alt="loupe" title="Voir profil"></span></a>
                         |
-                        <a href="?action=suppression&id_produit='. $ligne['id_produit'] .'" onclick="return(confirm(\' Etes-vous certain de vouloir supprimer ce produit ? \'))"> supprimer </a>
+                        <a href="?action=suppression&id_produit='. $produit['id_produit'] .'" onclick="return(confirm(\' Etes-vous certain de vouloir supprimer ce produit ? \'))"><span><img src="../img/glyphicons/poubelle.png" alt="poubelle" title="supprimer"></span></a>
                         |
-                        <a href="?action=modification&id_produit='. $ligne['id_produit'] .'"> modifier </a>
+                        <a href="?action=modification&id_produit='. $produit['id_produit'] .'"><span><img src="../img/glyphicons/crayon.png" alt="crayon" title="modifier"></span></a>
 
                     </td>';
 

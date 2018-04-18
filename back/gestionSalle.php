@@ -70,11 +70,13 @@ require_once('../inc/init.inc.php');
 		// preg_match() retourne 1 = true si le code correspond à l'expression rationnelle sinon 0 = false.
 			 $c .= '<div class="bg-danger"> Le code postal est incorrecte.</div>';
 		}
-		$photo =''; // Déclaration de la variable endehors de la condition
-		$photo_tmp = '';
-		$photo_dur='';// pour debug
 
-		if(!empty($_FILES['photo']['name'])){ // traitement de la photo
+		// Déclaration de la variable en dehors de la condition
+		$photo =''; 
+		$photo_tmp = '';
+		$photo_dur='';
+
+		if(!empty($_FILES['photo']['name'])){ // traitement de la photo :
 
 				$photo = 'img/' . $_POST['ville'] . '_' . $_FILES['photo']['name']; // On renomme la photo uploadée avec le nom de la ville pour limiter le risque de doublon dans les noms. On ajoute le chemin d'acces au dossier /img/.
 
@@ -94,15 +96,16 @@ require_once('../inc/init.inc.php');
 	
 			//debug($membre->rowCount());
 	
-			if($salle->rowcount() > 0 && $_GET['action'] != 'modififier') {
-				//si la requête retourne au mpoins une ligne c'est que le pseudo existe déjà
-				$c .= '<div class="bg-danger">Titre indisponible, veuillez en choisir un autre !</div>';
-			}else {
+			// if($salle->rowcount() > 0 && $_GET['action'] != 'modififier') {
+			// 	//si la requête retourne au mpoins une ligne c'est que le pseudo existe déjà
+			// 	$c .= '<div class="bg-danger">Titre indisponible, veuillez en choisir un autre !</div>';
+			// }else {
 				// Sinon on peut inscrire le membre en BDD :
 					
 				executeRequete(
-				"INSERT INTO salle (titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (:titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)", 
+				"REPLACE INTO salle (id_salle, titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (:id_salle, :titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)", 
 					array(
+						':id_salle'			=> $_POST['id_salle'],
 						':titre' 			=> $_POST['titre'],
 						':description' 		=> $_POST['description'],
 						':photo' 			=> $photo,
@@ -117,7 +120,7 @@ require_once('../inc/init.inc.php');
 	
 				$c .= '<div class="bg-success">La salle a bien été enregistrée.</div>';
 	
-			} //fin de la verif nom salle
+			//} //fin de la verif nom salle
 		} // fin du if (empty($c)) 
 	
 	} // fin du if (!isset($_POST)) 

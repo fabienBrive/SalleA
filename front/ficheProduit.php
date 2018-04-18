@@ -3,65 +3,103 @@
 require_once('../inc/init.inc.php');
 
 // ----------------------- TRAITEMENT ----------------------------------------
+$adresse = '';
+$suggestion = '';
+
 
 //****************Traitement pour affichage de la page produit******************  */
 
 $r = executeRequete("SELECT s.titre, s.description, s.photo, s.pays, s.ville, s.adresse, s.cp, s.capacite, s.categorie, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix FROM produit p, salle s WHERE s.id_salle = p.id_salle AND p.id_produit = :id_produit",array(':id_produit' => $_GET['id_produit']));
 
+
 $ficheProduit = $r->fetch(PDO::FETCH_ASSOC);
 debug($ficheProduit);
 
 
-$adresse = '';
-
 $adresse = $ficheProduit['adresse'].' '.$ficheProduit['cp'].' '.$ficheProduit['ville'].' '.$ficheProduit['pays'];
 $adresse = str_replace(' ','+',$adresse);
 debug($adresse);
+
+
+
+//Requete pour affichage des produits similaires :
+$res = executeRequete("SELECT p.id_produit, s.photo FROM salle s, produit p WHERE s.id_salle = p.id_salle AND s.ville = :ville AND p.id_produit NOT LIKE :id_produit ORDER BY RAND( ) LIMIT 4",
+                array(
+                    ':ville'        => $ficheProduit['ville'],
+                    ':id_produit'   => $ficheProduit['id_produit'] 
+                ));
+
+// affichage des contenus via variable suggestion:
+while ($p_similaire = $res->fetch(PDO::FETCH_ASSOC)){
+
+ 	//debug($resultat_suggestion);
+ 	$suggestion .= '<div class="col-md-3"> 
+ 					<a href="?id_produit='. $p_similaire['id_produit'] .'"><img src="'. $p_similaire['photo'] .'"  class="img-responsive"></a>
+ 					</div>';
+}
+
 // ----------------------- AFFICHAGE ----------------------------------------
 
 require_once('../inc/haut.inc.php');
 ?>
 <div><!-- Partie haute Affichage produit -->
 
-    <div><!-- bandeau présentation titre + note + bouton resa -->
-        <h2><?php echo $ficheProduit['titre'] ?></h2>
-        <div>Note produit, en etoiles jquerry</div>
-        <button>ou lien si non connecté</button>
-    </div>
-    <div><!-- photo -->
-        <img src="" alt="">
-    </div>
-    <div><!-- description -->
-        <h4>Description</h4>
-        <p><?php echo $ficheProduit['description'] ?></p>
-    </div>
-    <div><!-- Localisation -->
-        <h4>Localisation</h4>
-        <div >
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2618.228603518832!2d2.1873524155022226!3d48.98720689958211!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e660d104da244d%3A0xae034d2fe4341b5c!2s<?php echo $adresse?>!5e0!3m2!1sfr!2sfr!4v1523308963736" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+    <div class="row"><!-- bandeau présentation titre + note + bouton resa -->
+        <h2 class="col-md-4"><?php echo $ficheProduit['titre'] ?></h2>
+        <div class="col-md-4">Note produit, en etoiles jquerry</div>
+        <div class="col-md-4">
+            <?php if (internauteEstConnecte()){
+                echo'<button class="btn">Réserver</button>';
+            }else{
+                echo '<a href="connexion.php">Connectez Vous!</a>';
+            }?>
         </div>
-        <img src="" alt=""></img>
-    </div>
-    <div><!-- info complémentaires -->
+    </div><!-- .row -->
+
+    <div class="row">
+        <div class="col-md-8"><!-- photo -->
+            <img class="img-responsive" src="<?php echo '../'.$ficheProduit['photo'];?>" alt="photo<?php echo $ficheProduit['titre'];?>">
+        </div>
+
+        <div class="col-md-4"><!-- description -->
+            <h4>Description</h4>
+            <p><?php echo $ficheProduit['description'] ?></p>
+        </div>
+
+        <div class="col-md-4"><!-- Localisation -->
+            <h4>Localisation</h4>
+            <div >
+            <iframe
+                width="100%"
+                height="300"
+                frameborder="0" style="border:0"
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAiwCN8YWIOIpAuBw4zBhQ9FZbESd6h-rc 
+                    &q=<?php echo $adresse ?>" allowfullscreen>
+            </iframe>
+            </div>
+        </div>
+    </div><!-- .row -->
+
+    <div class="row"><!-- info complémentaires -->
         <h4>Informations complémentaires</h4>
-        <div> <p>Arrivée : <?php echo $ficheProduit['date_arrivee'] ?> <br>
-                Depart : <?php echo $ficheProduit['date_depart'] ?></p> </div>
-        <div> <p>capacite : <?php echo $ficheProduit['capacite'] ?> <br>
-                categorie : <?php echo $ficheProduit['categorie'] ?></p></div>
-        <div> <p>Adresse : <?php echo $ficheProduit['adresse'] .' '. $ficheProduit['cp'] .' '. $ficheProduit['ville'] ?> <br>
-                prix : <?php echo $ficheProduit['prix'] ?> € </p></div>
-    </div>
-
-
-
-
+        <div class="col-md-4">
+            <p>Arrivée : <?php echo $ficheProduit['date_arrivee'] ?> <br>
+                Depart : <?php echo $ficheProduit['date_depart'] ?></p> 
+        </div>
+        <div class="col-md-4">
+            <p>capacite : <?php echo $ficheProduit['capacite'] ?> <br>
+                categorie : <?php echo $ficheProduit['categorie'] ?></p>
+        </div>
+        <div class="col-md-4">
+            <p>Adresse : <?php echo $ficheProduit['adresse'] .' '. $ficheProduit['cp'] .' '. $ficheProduit['ville'] ?> <br>
+                prix : <?php echo $ficheProduit['prix'] ?> € </p>
+        </div>
+    </div><!-- .row -->
 </div><!-- Fin Partie haute Affichage produit -->
 
 <div><!-- Partie basse Autres produit -->
 
-    <a href="">
-        <img src="" alt="">
-    </a>
+    <?php echo $suggestion; ?>
 
 </div><!-- Fin Partie basse Autres produit -->
 
@@ -70,6 +108,10 @@ require_once('../inc/haut.inc.php');
 
 
 
-<?php
+<?php // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //star rating jquerry antena.io notation page avis
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //star rating css url: percentage star rating  codepens blue tide pro
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 require_once('../inc/bas.inc.php');
 

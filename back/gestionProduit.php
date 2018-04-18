@@ -157,7 +157,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'modification' && isset($_GET['
     <?php debug($_POST); ?>
 
     <label for="date_arrivee">Date d'arrivée</label><br>
-    <input type="text" class="datepicker" name="date_arrivee"  <?php if (isset($produit_actuel['date_arrivee'])){
+    <input type="text" id="date_arrivee" name="date_arrivee"  <?php if (isset($produit_actuel['date_arrivee'])){
                                                                             echo 'value="'. $produit_actuel['date_arrivee'] .'"';
                                                                     } else{
                                                                             echo 'placeholder="date d\'arrivée"';
@@ -166,7 +166,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'modification' && isset($_GET['
             <?php debug($date_arrivee); ?>
 
     <label for="date_depart">Date de départ</label><br>
-    <input type="text" class="datepicker" name="date_depart"   <?php if (isset($produit_actuel['date_depart'])){
+    <input type="text" id="date_depart" name="date_depart"   <?php if (isset($produit_actuel['date_depart'])){
                                                                         echo 'value="'. $produit_actuel['date_depart'] .'"';
                                                                     } else{
                                                                         echo 'placeholder="date de départ"';

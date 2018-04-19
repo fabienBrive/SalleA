@@ -74,7 +74,7 @@ echo $c;
 	<input type="text" name="pseudo" id="pseudo" placeholder="Votre pseudo"><br><br>
 
 	<label for="mdp"></label><br>
-	<input type="text" name="mdp" id="mdp" placeholder="Votre mot de passe"><br><br>
+	<input type="password" name="mdp" id="mdp" placeholder="Votre mot de passe"><br><br>
 
 	<input type="submit" value="Connexion" class="btn">
 

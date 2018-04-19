@@ -38,6 +38,9 @@ while ($p_similaire = $res->fetch(PDO::FETCH_ASSOC)){
  					</div>';
 }
 
+// Envoie des champs du produit en base de donnée commande lors du clic on envoie les données en post vers une potentielle page panier
+
+
 // ----------------------- AFFICHAGE ----------------------------------------
 
 require_once('../inc/haut.inc.php');
@@ -49,7 +52,27 @@ require_once('../inc/haut.inc.php');
         <div class="col-md-4">Note produit, en etoiles jquerry</div>
         <div class="col-md-4">
             <?php if (internauteEstConnecte()){
-                echo'<button class="btn">Réserver</button>';
+                echo '<form method="post" action="../panier.php">';
+
+                echo '<label for="id_produit"></label>';
+                echo '<input type="hidden" value="'. $ficheProduit['id_produit'] .'" id="id_produit" name="id_produit">';
+
+                echo '<label for="titre"></label>';
+                echo '<input type="hidden" value="'. $ficheProduit['titre'] .'" id="titre" name="titre">';
+
+                echo '<label for="date_arrivee"></label>';
+                echo '<input type="hidden" value="'. $ficheProduit['date_arrivee'] .'" id="date_arrivee" name="date_arrivee">';
+
+                 echo '<label for="date_depart"></label>';
+                echo '<input type="hidden" value="'. $ficheProduit['date_depart'] .'" id="date_depart" name="date_depart">';
+
+                echo '<label for="prix"></label>';
+                echo '<input type="hidden" value="'. $ficheProduit['prix'] .'" id="prix" name="prix">';
+                
+                echo '<button class="btn">Réserver</button>';
+
+                echo '</form>';
+
             }else{
                 echo '<a href="connexion.php">Connectez Vous!</a>';
             }?>

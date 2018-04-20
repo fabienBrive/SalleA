@@ -6,15 +6,28 @@ require_once('../inc/init.inc.php');
 $adresse = '';
 $suggestion = '';
 
+//Redirection boutique si etat  produit = reservation :
+$resultat = executeRequete("SELECT etat FROM produit WHERE id_produit = :id_produit",array(
+                ':id_produit' => $_GET['id_produit']
+));
+$resultat = $resultat->fetch(PDO::FETCH_ASSOC);
+
+debug($resultat);
+if ($resultat['etat'] == 'reservation'){
+        header('location:'. RACINE_SITE .'index.php');
+}
+
+
 
 //****************Traitement pour affichage de la page produit******************  */
 
-$r = executeRequete("SELECT p.id_produit, s.titre, s.description, s.photo, s.pays, s.ville, s.adresse, s.cp, s.capacite, s.categorie, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix FROM produit p, salle s WHERE s.id_salle = p.id_salle AND p.id_produit = :id_produit",array(':id_produit' => $_GET['id_produit']));
+// requête globale pour l'affichage de la page :
+$r = executeRequete("SELECT p.id_produit, p.id_salle, s.titre, s.description, s.photo, s.pays, s.ville, s.adresse, s.cp, s.capacite, s.categorie, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix FROM produit p, salle s WHERE s.id_salle = p.id_salle AND p.id_produit = :id_produit",array(':id_produit' => $_GET['id_produit']));
 
 
 $ficheProduit = $r->fetch(PDO::FETCH_ASSOC);
 //debug($ficheProduit);
-
+debug($ficheProduit);
 
 $adresse = $ficheProduit['adresse'].' '.$ficheProduit['cp'].' '.$ficheProduit['ville'].' '.$ficheProduit['pays'];
 $adresse = str_replace(' ','+',$adresse);
@@ -29,7 +42,7 @@ $res = executeRequete("SELECT p.id_produit, s.photo FROM salle s, produit p WHER
                     ':id_produit'   => $ficheProduit['id_produit'] 
                 ));
 
-// affichage des contenus via variable suggestion:
+// affichage des contenus via la variable suggestion:
 while ($p_similaire = $res->fetch(PDO::FETCH_ASSOC)){
 
  	//debug($resultat_suggestion);
@@ -38,10 +51,45 @@ while ($p_similaire = $res->fetch(PDO::FETCH_ASSOC)){
  					</div>';
 }
 
-// Envoie des champs du produit en base de donnée commande lors du clic on envoie les données en post vers une potentielle page panier
+
+
+// Envoie du post (Formulaire caché avec id_produit id_membre et prix) pour entrée en base de donnée
+if($_POST){
+
+
+
+    executeRequete( // Si le post est plein et que les contrçles sont bon alors on envoie en base
+                "REPLACE INTO commande  VALUES (NULL, :id_membre, :id_produit, NOW())", 
+                array(
+                    ':id_membre' 	=> $_SESSION['membre']['id_membre'],
+                    ':id_produit' 	=> $ficheProduit['id_produit']
+            ));
+
+
+// pour redéclaré le produit en base avec son nouveau statut je reconverti la date au format BDD
+    if(isset($ficheProduit['date_arrivee'])){
+        $date_arrivee = new DateTime($ficheProduit['date_arrivee']);
+        $date_arrivee = $date_arrivee->format('Y-m-d');
+    }
+    if (isset($ficheProduit['date_depart'])) {
+        $date_depart = new DateTime($ficheProduit['date_depart']);
+        $date_depart = $date_depart->format('Y-m-d');
+    }
+
+    executeRequete( // Si le produit entre en base table commande alors son statut produit change -> RESERVATION
+                "REPLACE INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix, etat) VALUES (:id_produit, :id_salle, :date_arrivee, :date_depart, :prix, 'reservation' )", 
+                array(
+                    ':id_produit'       => $ficheProduit['id_produit'],
+                    ':id_salle' 		=> $ficheProduit['id_salle'],
+                    ':date_arrivee' 	=> $date_arrivee,
+                    ':date_depart' 		=> $date_depart,
+                    ':prix' 		    => $ficheProduit['prix']
+                ));
+}
 
 
 // ----------------------- AFFICHAGE ----------------------------------------
+debug($_SESSION);
 
 require_once('../inc/haut.inc.php');
 ?>
@@ -52,19 +100,13 @@ require_once('../inc/haut.inc.php');
         <div class="col-md-4">Note produit, en etoiles jquerry</div>
         <div class="col-md-4">
             <?php if (internauteEstConnecte()){
-                echo '<form method="post" action="../panier.php">';
+                echo '<form method="post" action="#">';
 
                 echo '<label for="id_produit"></label>';
                 echo '<input type="hidden" value="'. $ficheProduit['id_produit'] .'" id="id_produit" name="id_produit">';
 
-                echo '<label for="titre"></label>';
-                echo '<input type="hidden" value="'. $ficheProduit['titre'] .'" id="titre" name="titre">';
-
-                echo '<label for="date_arrivee"></label>';
-                echo '<input type="hidden" value="'. $ficheProduit['date_arrivee'] .'" id="date_arrivee" name="date_arrivee">';
-
-                 echo '<label for="date_depart"></label>';
-                echo '<input type="hidden" value="'. $ficheProduit['date_depart'] .'" id="date_depart" name="date_depart">';
+                echo '<label for="id_membre"></label>';
+                echo '<input type="hidden" value="'. $_SESSION['membre']['id_membre'] .'" id="id_membre" name="id_membre">';
 
                 echo '<label for="prix"></label>';
                 echo '<input type="hidden" value="'. $ficheProduit['prix'] .'" id="prix" name="prix">';

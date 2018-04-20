@@ -26,7 +26,7 @@ if (!internauteEstConnecteEtEstAdmin()) {
 
 require_once('../inc/haut.inc.php');
 
-echo $contenu;
+echo $c;
 
 require_once('../inc/bas.inc.php');
 

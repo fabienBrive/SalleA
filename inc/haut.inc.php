@@ -37,7 +37,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="<?php echo RACINE_SITE . 'boutique.php';?>">SalleA</a>
+                <a class="navbar-brand" href="<?php echo RACINE_SITE . 'index.php';?>">SalleA</a>
             </div>
     <!-- Liens de navigation, formulaires et autres -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

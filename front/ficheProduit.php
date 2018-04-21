@@ -15,6 +15,7 @@ $resultat = $resultat->fetch(PDO::FETCH_ASSOC);
 debug($resultat);
 if ($resultat['etat'] == 'reservation'){
         header('location:'. RACINE_SITE .'index.php');
+        exit(); // on sort du script on ne lit pas la suite
 }
 
 

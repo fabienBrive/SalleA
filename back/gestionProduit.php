@@ -12,8 +12,6 @@ if (!internauteEstConnecteEtEstAdmin()) { // par sécurité on vérifie que l'in
 }
 
 
-
-
 // *************** traitement du formulaire (affichage en HTML dans la partie d'affichage) *****************************
 
 if ($_POST){ // if seul remplace le if(isset()) car renvoie lui aussi true ou false en fonction de l'existence de $_POST
@@ -67,7 +65,6 @@ if(isset($_GET['action']) && $_GET['action'] == 'suppression' && isset($_GET['id
     // Si il y a bien une ligne on la delete sinon message erreur.
     if ($r->rowCount() == 1) {
         // Ici le produit existe
-        $supprime = $r->fetch(PDO::FETCH_ASSOC); // Pas de boucle car je suis sur de n'avoir qu'un seul produit (selection par l'id)
 
         executeRequete("DELETE FROM produit WHERE id_produit = :id_produit", array(':id_produit' => $_GET['id_produit']));
         $c .= '<div class="bg-success">Produit supprimé !</div>';

@@ -13,6 +13,8 @@ $c .= '<p><span>Prenom : </span>'. $_SESSION['membre']['prenom'] .' </p><br>';
 $c .= '<p><span>Email : </span>'. $_SESSION['membre']['email'] .' </p><br>';
 $c .= '<p><span>Civilité : </span>'. $_SESSION['membre']['civilite'] .' </p><br>';
 $c .= '<p><span>Statut : </span>'. $_SESSION['membre']['statut'] .' </p><br>';
+
+
 }else{
     header('location:index.php');
     exit();

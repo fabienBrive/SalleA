@@ -9,6 +9,8 @@ require_once( '../inc/init.inc.php');
 
 if (isset($_GET['action']) && $_GET['action'] == 'deconnexion') {
     session_destroy(); // si le lien deconnexion est cliqué -> 'deconnexion' passe en GET alors on détruit la session EN FIN DE SCRIPT
+     header('location:../index.php'); // renvoi vers profil
+     exit();
 }
 
 
@@ -18,7 +20,7 @@ if(internauteEstConnecte()){
     // A ce moment du script la session n'etant pas encore détruite l'internaute est toujours connecté on le fait donc sortir de la page via header location direction profil -> la session sera alors détruite il ne pourra donc pas accéder a son profil et sera redirigé vers cette page de connexion
     
     header('location:profil.php'); // renvoi vers profil
-    exit(); // on sort du script et on détruit la session
+    exit(); 
 }
 
 

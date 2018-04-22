@@ -12,7 +12,7 @@ $resultat = executeRequete("SELECT etat FROM produit WHERE id_produit = :id_prod
 ));
 $resultat = $resultat->fetch(PDO::FETCH_ASSOC);
 
-debug($resultat);
+//debug($resultat);
 if ($resultat['etat'] == 'reservation'){
         header('location:'. RACINE_SITE .'index.php');
         exit(); // on sort du script on ne lit pas la suite
@@ -28,7 +28,7 @@ $r = executeRequete("SELECT p.id_produit, p.id_salle, s.titre, s.description, s.
 
 $ficheProduit = $r->fetch(PDO::FETCH_ASSOC);
 //debug($ficheProduit);
-debug($ficheProduit);
+//debug($ficheProduit);
 
 $adresse = $ficheProduit['adresse'].' '.$ficheProduit['cp'].' '.$ficheProduit['ville'].' '.$ficheProduit['pays'];
 $adresse = str_replace(' ','+',$adresse);
@@ -90,7 +90,7 @@ if($_POST){
 
 
 // ----------------------- AFFICHAGE ----------------------------------------
-debug($_SESSION);
+//debug($_SESSION);
 
 require_once('../inc/haut.inc.php');
 ?>
@@ -146,7 +146,7 @@ require_once('../inc/haut.inc.php');
         </div>
     </div><!-- .row -->
 
-    <div class="row"><!-- info complémentaires -->
+    <div class="row col-md-12"><!-- info complémentaires -->
         <h4>Informations complémentaires</h4>
         <div class="col-md-4">
             <p>Arrivée : <?php echo $ficheProduit['date_arrivee'] ?> <br>
@@ -169,6 +169,19 @@ require_once('../inc/haut.inc.php');
     <?php echo $suggestion; ?>
 
 </div><!-- Fin Partie basse Autres produit -->
+<div class="col-md-12">
+    <div class="col-md-6">
+        <?php if (internauteEstConnecte()) : ?>
+            <a href="avis.php?id_produit=<?php echo $ficheProduit['id_produit'] ?>">Déposer un commentaire ou une note</a>
+        <?php else:?>
+           <a href="connexion.php">Cliquez ici pour vous connecter</a>';
+       <?php endif; ?>
+    </div>
+
+    <div class="col-md-6">
+        <a href="../index.php?id_produit=<?php echo $ficheProduit['id_produit'] ?>">Retour boutique</a>
+    </div>
+</div>
 
 
 

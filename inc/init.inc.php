@@ -26,7 +26,7 @@ define('RACINE_SITE_FRONT','/sallea/front/');
 $c = ''; // c pour Contenu
 $c_gauche = ''; // contenu gauche de la page
 $c_droit = ''; // contenu droit de la page
-$compteur = ''; // compteur boutique
+$compteur = 0; // compteur boutique
 
 // Inclusion du fichier de fonctions :
 require_once('fonctions.inc.php');

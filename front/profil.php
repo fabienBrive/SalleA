@@ -8,7 +8,7 @@ require_once('../inc/init.inc.php');
 
 
 // Préparation de l'affichage des ifos profil et de la table des commande du memebre :
-    debug($_SESSION['membre']);
+    //debug($_SESSION['membre']);
     if ($_SESSION){ // Si une session est ouverte alors le mmebre est connecté j'affiche sa page profil
 
         if (internauteEstConnecteEtEstAdmin() && isset($_GET['action']) && $_GET['action'] == 'voir' && isset($_GET['id_membre'] )){
@@ -19,8 +19,8 @@ require_once('../inc/init.inc.php');
                 $details_membre = $res->fetch(PDO::FETCH_ASSOC);
 
 
-            $c .= '<h2>Bonjour '. $details_membre['pseudo'] .'</h2>';
-            $c .= '<h3>Voila les informations de ton profil : </h3>';
+            $c .= '<h2>Vous êtes sur le profil de '. $details_membre['pseudo'] .'</h2>';
+            $c .= '<h3>Toutes ses informations : </h3>';
             $c .= '<p><span>Nom : </span>'. $details_membre['nom'] .' </p><br>';
             $c .= '<p><span>Prenom : </span>'. $details_membre['prenom'] .' </p><br>';
             $c .= '<p><span>Email : </span>'. $details_membre['email'] .' </p><br>';
@@ -31,7 +31,7 @@ require_once('../inc/init.inc.php');
             else{
         
             $c .= '<h2>Bonjour '. $_SESSION['membre']['pseudo'] .'</h2>';
-            $c .= '<h3>Voila les informations de ton profil : </h3>';
+            $c .= '<h3>Voila les informations de votre profil : </h3>';
             $c .= '<p><span>Nom : </span>'. $_SESSION['membre']['nom'] .' </p><br>';
             $c .= '<p><span>Prenom : </span>'. $_SESSION['membre']['prenom'] .' </p><br>';
             $c .= '<p><span>Email : </span>'. $_SESSION['membre']['email'] .' </p><br>';
@@ -51,13 +51,13 @@ require_once('../inc/init.inc.php');
        
         
             if (internauteEstConnecteEtEstAdmin() && isset($_GET['action']) && $_GET['action'] == 'voir' && isset($_GET['id_membre'] )){
-                    $test = $_GET['id_membre'];
+                $marqueur = $_GET['id_membre'];
             }else{
-                $test = $_SESSION['membre']['id_membre'];
+                $marqueur = $_SESSION['membre']['id_membre'];
             }
             
-            $r = executeRequete("SELECT * FROM commande c, produit p WHERE c.id_produit = p.id_produit AND c.id_membre = :id_membre",array(
-                    ':id_membre' => $test
+            $r = executeRequete("SELECT c.id_commande, c.id_produit, p.id_produit, DATE_FORMAT(c.date_enregistrement, '%d-%m-%Y %H:%i') AS date_enregistrement, p.prix FROM commande c, produit p WHERE c.id_produit = p.id_produit AND c.id_membre = :id_membre",array(
+                    ':id_membre' => $marqueur
                     ));
 
     while($commandes_membre = $r->fetch(PDO::FETCH_ASSOC)){

@@ -4,14 +4,14 @@ require_once('../inc/init.inc.php');
 
 // ----------------------- TRAITEMENT ----------------------------------------
 
-if (isset($_GET['id_produit'])) :
+if (isset($_GET['id_produit'])) {
     $r = executeRequete("SELECT * FROM produit p, salle s WHERE p.id_produit = :id_produit", array(
             ':id_produit' => $_GET['id_produit']
     ));
-    if (($r->rowcount()) != 1){
-        $c .= echo '<p>un problème est survenu avec ce produit vous ne pouvez actuellement pas laisser d\avis à son sujet</p>'
+    if (rowcount($r)) !== 1){
+        $c .= '<p>un problème est survenu avec ce produit vous ne pouvez actuellement pas laisser d\'avis à son sujet</p>';
 
-        $c .= '<a href="ficheProduit.php?id_produit='. $_GET['id_produit'] .'">Retour Produit</a>'
+        $c .= '<a href="ficheProduit.php?id_produit='. $_GET['id_produit'] .'">Retour Produit</a>';
     } else {
 
     $detailsProduit = $r->fetch(PDO::FETCH_ASSOC);
@@ -53,8 +53,13 @@ echo $c;
 <label for="id_membre"></label>
 <input type="hidden" id="id_membre" name="id_membre" value="<?php $_SESSION['id_membre'] ?>">
 
-<label for="">Note</label>
-<input type="text">
+<select id="example">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+</select>
 
 <label for="commentaire">Commentaire</label>
 <textarea name="commentaire" id="commentaire" cols="30" rows="10"></textarea>

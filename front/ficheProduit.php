@@ -60,7 +60,7 @@ if($_POST){
 
 
     executeRequete( // Si le post est plein et que les contrçles sont bon alors on envoie en base
-                "REPLACE INTO commande  VALUES (NULL, :id_membre, :id_produit, NOW())", 
+                "REPLACE INTO commande VALUES (NULL, :id_membre, :id_produit, NOW())", 
                 array(
                     ':id_membre' 	=> $_SESSION['membre']['id_membre'],
                     ':id_produit' 	=> $ficheProduit['id_produit']
@@ -86,7 +86,10 @@ if($_POST){
                     ':date_depart' 		=> $date_depart,
                     ':prix' 		    => $ficheProduit['prix']
                 ));
-}
+
+    header('location:'. RACINE_SITE .'index.php');
+    exit(); // on sort du script on ne lit pas la suite
+} // fin du if($_POST)
 
 
 // ----------------------- AFFICHAGE ----------------------------------------

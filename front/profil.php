@@ -51,9 +51,9 @@ require_once('../inc/init.inc.php');
        
         
             if (internauteEstConnecteEtEstAdmin() && isset($_GET['action']) && $_GET['action'] == 'voir' && isset($_GET['id_membre'] )){
-                $marqueur = $_GET['id_membre'];
+                $marqueur = $_GET['id_membre']; // si je suis l'admin je veux voir le profil d'un memebre le marqueur prend la valeur du $_GET
             }else{
-                $marqueur = $_SESSION['membre']['id_membre'];
+                $marqueur = $_SESSION['membre']['id_membre']; // sinon si je suis membre et je veux voir mon profil, le marqueur prend la veleur du $_SESSION
             }
             
             $r = executeRequete("SELECT c.id_commande, c.id_produit, p.id_produit, DATE_FORMAT(c.date_enregistrement, '%d-%m-%Y %H:%i') AS date_enregistrement, p.prix FROM commande c, produit p WHERE c.id_produit = p.id_produit AND c.id_membre = :id_membre",array(

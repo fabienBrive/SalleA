@@ -4,15 +4,18 @@ require_once('../inc/init.inc.php');
 
 // ----------------------- TRAITEMENT ----------------------------------------
 
-if (isset($_GET['id_produit'])) {
-    $r = executeRequete("SELECT * FROM produit p, salle s WHERE p.id_produit = :id_produit", array(
+
+// Si il y a id_produit en GET
+if (isset($_GET['id_produit'])) { // Je vais chercher les infos du produit en base pour réaliser un affichages des caractèristiques du produit
+    $r = executeRequete("SELECT * FROM produit p, salle s WHERE p.id_salle = s.id_salle AND p.id_produit = :id_produit", array(
             ':id_produit' => $_GET['id_produit']
     ));
-    if (rowcount($r)) !== 1){
+    //debug($r->rowcount());
+    if ($r->rowcount() != 1){ // si la base renvoie plus ou moins d'une ligne de résultat c'est qu'il y a un problème j'affiche donc un message d'erreur
         $c .= '<p>un problème est survenu avec ce produit vous ne pouvez actuellement pas laisser d\'avis à son sujet</p>';
 
         $c .= '<a href="ficheProduit.php?id_produit='. $_GET['id_produit'] .'">Retour Produit</a>';
-    } else {
+    } else { // je fais mon fetch et affiche les infos souhaitées
 
     $detailsProduit = $r->fetch(PDO::FETCH_ASSOC);
     debug($detailsProduit);
@@ -20,17 +23,28 @@ if (isset($_GET['id_produit'])) {
     $c .= '<h2>Votre avis sur ce produit</h2>';
 
     $c .= '<p><span>Salle : </span>'. $detailsProduit['titre'] .'</p>';
-    $c .= '<p><span>VIlle : </span>'. $detailsProduit['ville'] .'</p>';
-    $c .= '<p><span>Categorie : </span>'. $detailsProduit['categorie'] .'</p>';
+    $c .= '<p><span>Ville : </span>'. $detailsProduit['ville'] .'</p>';
+    $c .= '<p><span>Catégorie : </span>'. $detailsProduit['categorie'] .'</p>';
     $c .= '<p><span>Prix : </span>'. $detailsProduit['prix'] .'</p>';
     }
 
 } else {
-    header('location:index.php');
+    header('location:../index.php'); // si pas d'id_produit en GET je suis redirigé vers l'index
 }
 
 
+if ($_POST){ // Si mon post est rempli j'envoie les produits en BDD
 
+    //!!!!!!!!!!!!!!!!!! Controle des champs du $_POST a faire !!!!!!!!!!!!!!!!!!!!!
+
+    debug($_POST);
+    $r = executeRequete("INSERT INTO avis (id_avis, id_membre, id_salle, commentaire, note, date_enregistrement) VALUES (NULL, :id_membre, :id_produit, :commentaire, :note, NOW())",array(
+                         ':id_membre'       =>  $_SESSION['membre']['id_membre'],
+                         ':id_produit'      =>  $detailsProduit['id_salle'],
+                         ':commentaire'     =>  $_POST['commentaire'],
+                         ':note'            =>  $_POST['note']
+    ));
+}
 
 
 
@@ -45,29 +59,31 @@ if (isset($_GET['id_produit'])) {
 
 require_once('../inc/haut.inc.php');
 
-echo $c;
+echo $c; // aprés mon affichage des caractéristiques produit j'affiche mon formulaire de commentaire (avec note étoile)
 ?>
+<div class="col-md-12">
+    <h3>Formulaire</h3>
+    <form method="post">
 
-<form action="" method="post">
+        <label for="id_membre"></label>
+        <input type="hidden" id="id_membre" name="id_membre" value="<?php echo $_SESSION['membre']['id_membre'] ?>">
 
-<label for="id_membre"></label>
-<input type="hidden" id="id_membre" name="id_membre" value="<?php $_SESSION['id_membre'] ?>">
+        <label for="note">Note du produit</label><br>
+            <select name="note" id="note">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select><br>
 
-<select id="example">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-</select>
+        <label for="commentaire">Commentaire</label><br>
+        <textarea name="commentaire" id="commentaire" cols="60" rows="5" placeholder="Ici votre commentaire"></textarea><br><br>
 
-<label for="commentaire">Commentaire</label>
-<textarea name="commentaire" id="commentaire" cols="30" rows="10"></textarea>
+        <input type="submit" value="envoyer">
 
-</form>
-
-
-
+    </form>
+</div>
 
 
 <?php

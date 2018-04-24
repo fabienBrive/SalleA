@@ -9,7 +9,7 @@ if (!internauteEstConnecteEtEstAdmin()) {
 	exit();
 }
 
-
+// Affichage des Avis insérés en base
 
 
 

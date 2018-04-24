@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/shop-homepage.css'; ?>">
     <!-- CSS de mon range -->
     <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/jquery.range.css'; ?>">
+    <!-- CSS bootstrap fontawesome -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <!-- CSS de mes notation etoiles -->
+    <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/fontawesome-stars.css'; ?>">>
 
     <script src="<?php echo RACINE_SITE . 'inc/js/jquery.js'; ?>"></script>
     <!-- Jquerry UI -->
@@ -22,6 +26,9 @@
     <script src="<?php echo RACINE_SITE . 'inc/js/bootstrap.min.js'; ?>"></script>
     <!-- script range -->
     <script src="<?php echo RACINE_SITE . 'inc/js/jquery.range.js'; ?>"></script>
+    
+    <!-- script notation étoiles -->
+    <script src="<?php echo RACINE_SITE . 'inc/js/jquery-bar-rating.js'; ?>"></script>
 
 </head>
 

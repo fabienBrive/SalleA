@@ -177,7 +177,7 @@ require_once('../inc/haut.inc.php');
         <?php if (internauteEstConnecte()) : ?>
             <a href="avis.php?id_produit=<?php echo $ficheProduit['id_produit'] ?>">Déposer un commentaire ou une note</a>
         <?php else:?>
-           <a href="connexion.php">Cliquez ici pour vous connecter</a>';
+           <a href="connexion.php">Cliquez ici pour vous connecter</a>
        <?php endif; ?>
     </div>
 
@@ -186,12 +186,27 @@ require_once('../inc/haut.inc.php');
     </div>
 </div>
 
+<!-- <?php //if (isset($_GET['action']) && $_GET['action'] == 'avis' && isset($_GET['id_produit'])) :?>
+<div class="col-md-12">
+    <form method="post" action="avis.php">
+
+    <label for="titre">Titre :</label><br>
+    <input type="text" id="titre" name="titre" placeholder="titre du commentaire"></input><br><br>
+
+    <label for="commentaire">Commentaire :</label><br>
+    <textarea name="commentaire" id="commentaire" cols="60" rows="5">Ici Votre Commentaire...</textarea><br><br>    
+
+    <input type="submit" value="Envoyer"></input>
+
+    </form>
+</div> -->
 
 
 
 
 
-<?php // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+<?php 
+//endif;// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       //star rating jquerry antena.io notation page avis
       //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       //star rating css url: percentage star rating  codepens blue tide pro

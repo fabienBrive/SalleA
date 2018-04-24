@@ -42,6 +42,12 @@ $( function() {
         isRange : true,
         theme : "theme-blue"
     });
+    
+   
+    $('#note').barrating({
+    theme: 'fontawesome-stars'
+    });
+   
 
 });
 </script>

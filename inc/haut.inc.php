@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/jquery-ui.min.css'; ?>">
 	<!-- boostrap shop homepage -->
     <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/shop-homepage.css'; ?>">
+    <!-- css sortie star-rating  -->
+    <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/star-rating.css'; ?>">
     <!-- CSS de mon range -->
     <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/jquery.range.css'; ?>">
     <!-- CSS bootstrap fontawesome -->
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <!-- CSS de mes notation etoiles -->
-    <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/fontawesome-stars.css'; ?>">>
+    <link rel="stylesheet" href="<?php echo RACINE_SITE . 'inc/css/fontawesome-stars.css'; ?>">
 
     <script src="<?php echo RACINE_SITE . 'inc/js/jquery.js'; ?>"></script>
     <!-- Jquerry UI -->

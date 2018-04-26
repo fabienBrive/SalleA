@@ -44,6 +44,8 @@ if ($_POST){ // Si mon post est rempli j'envoie les produits en BDD
                          ':commentaire'     =>  $_POST['commentaire'],
                          ':note'            =>  $_POST['note']
     ));
+
+    header('location:../index.php');
 }
 
 

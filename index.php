@@ -104,7 +104,9 @@ if(isset($_POST)) {
    
     //debug($r);
     //debug(date("Y-m-d"));
-
+    $res = executeRequete("SELECT id_salle, ROUND(AVG(note),2) AS note_moyenne FROM avis GROUP BY id_salle");
+    $noteSalle = $res->fetch(PDO::FETCH_ASSOC);
+    debug($noteSalle);
 
     while($produit_boutique = $r->fetch(PDO::FETCH_ASSOC)){
 
@@ -122,7 +124,12 @@ if(isset($_POST)) {
             $c_droit .= '<h4>'. $produit_boutique['prix'] .' €</h4>';//prix
             $c_droit .= '<p>'. $produit_boutique['description'] .'</p>';//descriptif
             $c_droit .= '<p>'. $date_arrivee .' au '. $date_depart .'</p><br>';//période
-            $c_droit .= '<div></div><br>';//note
+            $c_droit .= '<div class="col-md-4">
+                            <div class="star-ratings-css">
+                                <div class="star-ratings-css-top" style="width:'. $noteSalle[$id_salle] * 20 .'%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                                <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                            </div>
+                        </div>';//note
             $c_droit .= '<a href="front/ficheProduit.php?id_produit='. $produit_boutique['id_produit'] .'" >Voir details</a><br><br>';//lien voir
         $c_droit .= '</div>';
 

@@ -34,7 +34,12 @@ $adresse = $ficheProduit['adresse'].' '.$ficheProduit['cp'].' '.$ficheProduit['v
 $adresse = str_replace(' ','+',$adresse);
 //debug($adresse);
 
-
+// requête pour affichage de la note moyenne des avis de la salle
+$result  = executeRequete("SELECT ROUND(AVG(note),2) AS noteSalle FROM avis WHERE id_salle = :id_salle", array(
+                ':id_salle' => $ficheProduit['id_salle']
+));
+$noteSalle = $result->fetch(PDO::FETCH_ASSOC);
+debug($noteSalle);
 
 //Requete pour affichage des produits similaires :
 $res = executeRequete("SELECT p.id_produit, s.photo FROM salle s, produit p WHERE s.id_salle = p.id_salle AND s.ville = :ville AND p.id_produit NOT LIKE :id_produit ORDER BY RAND( ) LIMIT 4",
@@ -59,7 +64,7 @@ if($_POST){
 
 
 
-    executeRequete( // Si le post est plein et que les contrçles sont bon alors on envoie en base
+    executeRequete( // Si le post est plein et que les contrôles sont bon alors on envoie en base
                 "REPLACE INTO commande VALUES (NULL, :id_membre, :id_produit, NOW())", 
                 array(
                     ':id_membre' 	=> $_SESSION['membre']['id_membre'],
@@ -100,8 +105,17 @@ require_once('../inc/haut.inc.php');
 <div><!-- Partie haute Affichage produit -->
 
     <div class="row"><!-- bandeau présentation titre + note + bouton resa -->
-        <h2 class="col-md-4"><?php echo $ficheProduit['titre'] ?></h2>
-        <div class="col-md-4">Note produit, en etoiles jquerry</div>
+        <div class="col-md-4">
+            <h2><?php echo $ficheProduit['titre'] ?></h2>
+        </div>
+
+        <div class="col-md-4">
+            <div class="star-ratings-css">
+                <div class="star-ratings-css-top" style="width: <?php echo $noteSalle['noteSalle'] * 20; ?>%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+            </div>
+        </div>
+
         <div class="col-md-4">
             <?php if (internauteEstConnecte()){
                 echo '<form method="post" action="#">';
@@ -186,20 +200,6 @@ require_once('../inc/haut.inc.php');
     </div>
 </div>
 
-<!-- <?php //if (isset($_GET['action']) && $_GET['action'] == 'avis' && isset($_GET['id_produit'])) :?>
-<div class="col-md-12">
-    <form method="post" action="avis.php">
-
-    <label for="titre">Titre :</label><br>
-    <input type="text" id="titre" name="titre" placeholder="titre du commentaire"></input><br><br>
-
-    <label for="commentaire">Commentaire :</label><br>
-    <textarea name="commentaire" id="commentaire" cols="60" rows="5">Ici Votre Commentaire...</textarea><br><br>    
-
-    <input type="submit" value="Envoyer"></input>
-
-    </form>
-</div> -->
 
 
 

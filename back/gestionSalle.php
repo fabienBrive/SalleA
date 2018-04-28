@@ -138,7 +138,8 @@ require_once('../inc/init.inc.php');
 
 $r = executeRequete("SELECT * FROM salle");
 $c .= '<h2>Gestion des salles</h2>';
-$c .= 'Nombre de salle(s) en BDD : ' . $r->rowCount();
+$c .= 'Nombre de salle(s) en BDD : ' . $r->rowCount() .'<br>';
+$c .= '<a href="?action=créer">Cliquer sur ce lien pour afficher sous le tableau le formulaire de création de salle</a>';
 
 $c .=  '<table class="table"> 
 			<tr>';
@@ -182,12 +183,14 @@ $c .=  '</table>';
 
 
 
+
+
 // ----------------------- AFFICHAGE ----------------------------------------
 
 require_once('../inc/haut.inc.php');
 
 echo $c;
-
+if (isset($_GET['action']) && ($_GET['action'] == 'modifier' || $_GET['action'] == 'créer')) :
 ?>
 <form action="#" method="post" enctype="multipart/form-data">
 
@@ -311,7 +314,7 @@ echo $c;
 </form>
 
 <?php
-
+endif;
 require_once('../inc/bas.inc.php');
 
 

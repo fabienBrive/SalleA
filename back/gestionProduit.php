@@ -82,6 +82,7 @@ $r = executeRequete("SELECT p.id_produit, p.id_salle, DATE_FORMAT(p.date_arrivee
 
 $c .= '<h2>Gestion des Produits</h2>
             <p>Il y a actuellement ' . $r->rowcount() . ' produit en base de donnée.</p>' ;
+$c .= '<a href="?action=créer">Cliquer sur ce lien pour afficher sous le tableau le formulaire de création de produit</a>';
 
 // tableau affichage produit :
 $c .= '<table class="table table-dark">';
@@ -114,7 +115,7 @@ $c .= '<table class="table table-dark">';
                         |
                         <a href="?action=suppression&id_produit='. $produit['id_produit'] .'" onclick="return(confirm(\' Etes-vous certain de vouloir supprimer ce produit ? \'))"><span><img src="../img/glyphicons/poubelle.png" alt="poubelle" title="supprimer"></span></a>
                         |
-                        <a href="?action=modification&id_produit='. $produit['id_produit'] .'"><span><img src="../img/glyphicons/crayon.png" alt="crayon" title="modifier"></span></a>
+                        <a href="?action=modifier&id_produit='. $produit['id_produit'] .'"><span><img src="../img/glyphicons/crayon.png" alt="crayon" title="modifier"></span></a>
 
                     </td>';
 
@@ -133,69 +134,70 @@ echo $c;
 //debug ($_POST);
 //debug($produit_actuel);
 
+if (isset($_GET['action']) && ($_GET['action'] == 'modifier' || $_GET['action'] == 'créer')) :
 
 // ********* Remplissage des champs en cas de Modification **************
-if (isset($_GET['action']) && $_GET['action'] == 'modification' && isset($_GET['id_produit'])){ // Si j'ai l'action = modification dans le GET alors ...
+    if (isset($_GET['action']) && $_GET['action'] == 'modifier' && isset($_GET['id_produit'])){ // Si j'ai l'action = modification dans le GET alors ...
 
 
-	$r = executeRequete("SELECT id_produit, id_salle, DATE_FORMAT(date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(date_depart, '%d-%m-%Y') AS date_depart, prix, etat FROM produit WHERE id_produit = :id_produit", array(':id_produit' => $_GET['id_produit']));
-			
-    $produit_actuel = $r->fetch(PDO::FETCH_ASSOC); // pas de while car un seul produit
-}
+        $r = executeRequete("SELECT id_produit, id_salle, DATE_FORMAT(date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(date_depart, '%d-%m-%Y') AS date_depart, prix, etat FROM produit WHERE id_produit = :id_produit", array(':id_produit' => $_GET['id_produit']));
+                
+        $produit_actuel = $r->fetch(PDO::FETCH_ASSOC); // pas de while car un seul produit
+    }
 
-// ********************Affichage du formulaire **********************
-?>
+    // ********************Affichage du formulaire **********************
+    ?>
 
-<form method="post" action="#"> 
+    <form method="post" action="#"> 
 
-    <!-- on insère en iden l'id du produit bien que autoincrémenté et non modifiable pour le récupérer dans le post et traiter les infos aprés -->
-    <?php if(isset($produit_actuel['id_produit'])){
-        echo'<input type="hidden" id="id_produit" name="id_produit" value="<?php echo $produit_actuel[id_produit]?>" >';
-    } ?>
-    
-    <?php debug($_POST); ?>
+        <!-- on insère en iden l'id du produit bien que autoincrémenté et non modifiable pour le récupérer dans le post et traiter les infos aprés -->
+        <?php if(isset($produit_actuel['id_produit'])){
+            echo'<input type="hidden" id="id_produit" name="id_produit" value="<?php echo $produit_actuel[id_produit]?>" >';
+        } ?>
+        
+        <?php //debug($_POST); ?>
 
-    <label for="date_arrivee">Date d'arrivée</label><br>
-    <input type="text" id="date_arrivee" name="date_arrivee"  <?php if (isset($produit_actuel['date_arrivee'])){
-                                                                            echo 'value="'. $produit_actuel['date_arrivee'] .'"';
-                                                                    } else{
-                                                                            echo 'placeholder="date d\'arrivée"';
-                                                                    }?>><br><br>
-                                                                        
-            <?php debug($date_arrivee); ?>
+        <label for="date_arrivee">Date d'arrivée</label><br>
+        <input type="text" id="date_arrivee" name="date_arrivee"  <?php if (isset($produit_actuel['date_arrivee'])){
+                                                                                echo 'value="'. $produit_actuel['date_arrivee'] .'"';
+                                                                        } else{
+                                                                                echo 'placeholder="date d\'arrivée"';
+                                                                        }?>><br><br>
+                                                                            
+                <?php //debug($date_arrivee); ?>
 
-    <label for="date_depart">Date de départ</label><br>
-    <input type="text" id="date_depart" name="date_depart"   <?php if (isset($produit_actuel['date_depart'])){
-                                                                        echo 'value="'. $produit_actuel['date_depart'] .'"';
-                                                                    } else{
-                                                                        echo 'placeholder="date de départ"';
-                                                                    }?>><br><br>
-            <?php debug($date_depart); ?>
+        <label for="date_depart">Date de départ</label><br>
+        <input type="text" id="date_depart" name="date_depart"   <?php if (isset($produit_actuel['date_depart'])){
+                                                                            echo 'value="'. $produit_actuel['date_depart'] .'"';
+                                                                        } else{
+                                                                            echo 'placeholder="date de départ"';
+                                                                        }?>><br><br>
+                <?php //debug($date_depart); ?>
 
-    <label for="id_salle">Salle</label><br>
-    <select name="id_salle">
-        <?php 
-        $r = executeRequete("SELECT * FROM salle");
+        <label for="id_salle">Salle</label><br>
+        <select name="id_salle">
+            <?php 
+            $r = executeRequete("SELECT * FROM salle");
 
-        while ( $salle = $r->fetch(PDO::FETCH_ASSOC) ){
-            echo '<option value="'. $salle['id_salle'] .'">'. $salle['id_salle'] .' - '. $salle['titre'] .' - '. $salle['adresse'] .' '. $salle['cp'] .' '. $salle['ville'] .' - '. $salle['capacite'] .' pers </option>';
-        }
-        ?>
-    </select><br><br>
+            while ( $salle = $r->fetch(PDO::FETCH_ASSOC) ){
+                echo '<option value="'. $salle['id_salle'] .'">'. $salle['id_salle'] .' - '. $salle['titre'] .' - '. $salle['adresse'] .' '. $salle['cp'] .' '. $salle['ville'] .' - '. $salle['capacite'] .' pers </option>';
+            }
+            ?>
+        </select><br><br>
 
-    <label for="prix">Tarif</label><br>
-    <input type="text" id="prix" name="prix" <?php if (isset($produit_actuel['prix'])){
-                                                        echo 'value="'. $produit_actuel['prix'] .'"';
-                                                    } else{
-                                                        echo 'placeholder="Indiquer ici le prix"';
-                                                    }?>><br><br>
-    
+        <label for="prix">Tarif</label><br>
+        <input type="text" id="prix" name="prix" <?php if (isset($produit_actuel['prix'])){
+                                                            echo 'value="'. $produit_actuel['prix'] .'"';
+                                                        } else{
+                                                            echo 'placeholder="Indiquer ici le prix"';
+                                                        }?>><br><br>
+        
 
-    <input type="submit" class="btn btn-outline-dark" value="Enregistrer">
+        <input type="submit" class="btn btn-outline-dark" value="Enregistrer">
 
-</form>
+    </form>
 <?php
-
+endif;
 require_once('../inc/bas.inc.php');
 
 

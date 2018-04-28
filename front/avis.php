@@ -18,14 +18,15 @@ if (isset($_GET['id_produit'])) { // Je vais chercher les infos du produit en ba
     } else { // je fais mon fetch et affiche les infos souhaitées
 
     $detailsProduit = $r->fetch(PDO::FETCH_ASSOC);
-    debug($detailsProduit);
+    //debug($detailsProduit);
 
-    $c .= '<h2>Votre avis sur ce produit</h2>';
+    $c .= '<h2>Votre avis sur cette salle</h2>';
 
     $c .= '<p><span>Salle : </span>'. $detailsProduit['titre'] .'</p>';
     $c .= '<p><span>Ville : </span>'. $detailsProduit['ville'] .'</p>';
     $c .= '<p><span>Catégorie : </span>'. $detailsProduit['categorie'] .'</p>';
-    $c .= '<p><span>Prix : </span>'. $detailsProduit['prix'] .'</p>';
+    $c .= '<p><span>Prix : </span>'. $detailsProduit['prix'] .' €</p>';
+    $c .= '<img src="../'. $detailsProduit['photo'] .'" alt="photo salle">';
     }
 
 } else {
@@ -38,9 +39,9 @@ if ($_POST){ // Si mon post est rempli j'envoie les produits en BDD
     //!!!!!!!!!!!!!!!!!! Controle des champs du $_POST a faire !!!!!!!!!!!!!!!!!!!!!
 
     debug($_POST);
-    $r = executeRequete("INSERT INTO avis (id_avis, id_membre, id_salle, commentaire, note, date_enregistrement) VALUES (NULL, :id_membre, :id_produit, :commentaire, :note, NOW())",array(
+    $r = executeRequete("INSERT INTO avis (id_avis, id_membre, id_salle, commentaire, note, date_enregistrement) VALUES (NULL, :id_membre, :id_salle, :commentaire, :note, NOW())",array(
                          ':id_membre'       =>  $_SESSION['membre']['id_membre'],
-                         ':id_produit'      =>  $detailsProduit['id_salle'],
+                         ':id_salle'        =>  $detailsProduit['id_salle'],
                          ':commentaire'     =>  $_POST['commentaire'],
                          ':note'            =>  $_POST['note']
     ));

@@ -26,6 +26,7 @@ require_once('../inc/init.inc.php');
             $c .= '<p><span>Email : </span>'. $details_membre['email'] .' </p><br>';
             $c .= '<p><span>Civilité : </span>'. $details_membre['civilite'] .' </p><br>';
             $c .= '<p><span>Statut : </span>'. $details_membre['statut'] .' </p><br>';
+            $c .= '<a href="'. RACINE_SITE_BACK .'gestionMembre.php">Retour vers la page de Gestion des membres</a>';
 
         }
             else{

@@ -11,26 +11,46 @@ if (!internauteEstConnecteEtEstAdmin()) { // par sécurité on vérifie que l'in
 
 
 if (isset($_GET['stat']) && $_GET['stat'] == 'noteSalle'){
-		$requete = 'SELECT *, ROUND(AVG(note),2) AS statistique FROM avis LEFT JOIN salle ON avis.id_salle = salle.id_salle GROUP BY avis.id_salle ORDER BY statistique DESC LIMIT 0,5';
+		$requete = 'SELECT s.titre, s.id_salle, ROUND(AVG(a.note),2) AS statistique FROM avis a LEFT JOIN salle s ON a.id_salle = s.id_salle GROUP BY a.id_salle ORDER BY statistique DESC LIMIT 0,5';
 }
 elseif (isset($_GET['stat']) && $_GET['stat'] == 'commandeSalle'){
 		$requete = 'SELECT s.titre,s.id_salle, COUNT(s.id_salle) AS statistique FROM commande c, produit p, salle s WHERE c.id_produit = p.id_produit AND p.id_salle = s.id_salle GROUP BY s.id_salle ORDER BY statistique DESC LIMIT 0,5';
 }
 elseif (isset($_GET['stat']) && $_GET['stat'] == 'membreAchat'){
-		$requete = 'SELECT m.prenom, m.nom, m.pseudo, COUNT(c.id_membre) AS statistique FROM commande c, membre m WHERE c.id_membre = m.id_membre GROUP BY c.id_membre ORDER BY statistique DESC LIMIT 0,5';
+		$requete = 'SELECT m.prenom, m.nom, m.pseudo, m.id_membre, COUNT(c.id_membre) AS statistique FROM commande c, membre m WHERE c.id_membre = m.id_membre GROUP BY c.id_membre ORDER BY statistique DESC LIMIT 0,5';
 }
 elseif (isset($_GET['stat']) && $_GET['stat'] == 'notePrix'){
-		$requete = 'SELECT m.prenom, m.nom, m.pseudo, SUM(p.prix) AS statistique FROM commande c, membre m, produit p WHERE c.id_membre = m.id_membre AND c.id_produit = p.id_produit GROUP BY c.id_membre ORDER BY statistique DESC LIMIT 0,5';
+		$requete = 'SELECT m.prenom, m.nom, m.pseudo, m.id_membre, SUM(p.prix) AS statistique FROM commande c, membre m, produit p WHERE c.id_membre = m.id_membre AND c.id_produit = p.id_produit GROUP BY c.id_membre ORDER BY statistique DESC LIMIT 0,5';
+}else{
+
+	$c .= '<span>Choisissez une statiqtique à afficher.</span>';
 }
+
 
 $c .= '<ul>';
 
-$r = ExecuteRequete($requete);
-debug($r);
-while ($stat = $r->fetch(PDO::FETCH_ASSOC)){
+
+if (isset($_GET['stat']) && ($_GET['stat'] == 'noteSalle' || $_GET['stat'] == 'commandeSalle')){
 	
-	$c .= '<li>'. $stat['id_salle'] .' - '. $stat['titre'] .''. $stat['statistique'] .'</li>';
-	
+	global $r;
+	$r = ExecuteRequete($requete);
+
+	while ($stat = $r->fetch(PDO::FETCH_ASSOC)){
+		
+		//debug($stat);
+		$c .= '<li>'. $stat['id_salle'] .' - '. $stat['titre'] .' - '. $stat['statistique'] .'</li>';
+		
+	}
+}elseif(isset($_GET['stat']) && ($_GET['stat'] == 'membreAchat' || $_GET['stat'] == 'notePrix')){
+
+	global $r; 
+	$r = ExecuteRequete($requete);
+
+	while ($stat = $r->fetch(PDO::FETCH_ASSOC)){
+		
+		//debug($stat);
+		$c .= '<li>'. $stat['id_membre'] .' - '. $stat['pseudo'] .' - '. $stat['statistique'] .'</li>';
+	}
 }
 
 $c .= '</ul>';

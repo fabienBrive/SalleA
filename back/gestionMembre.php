@@ -110,7 +110,8 @@ if(isset($_GET['action']) && $_GET['action'] == "modifier" && isset($_GET['id_me
 
 $r = executeRequete("SELECT id_membre, pseudo, mdp, nom, prenom, email, civilite, statut, DATE_FORMAT(date_enregistrement, '%d-%m-%Y %H:%i') AS date_enregistrement FROM membre");
 $c .= '<h2>Gestion des membres</h2>';
-$c .=  "Nombre de membre(s) : " . $r->rowCount();
+$c .=  "Nombre de membre(s) : " . $r->rowCount() .'<br>';
+$c .= '<a href="?action=créer">Cliquer sur ce lien pour afficher sous le tableau le formulaire de création de membre</a>';
 
 $c .=  '<table class="table"> 
 			<tr>';
@@ -150,73 +151,73 @@ $c .=  '</table>';
 require_once('../inc/haut.inc.php');
 
 echo $c;
+if (isset($_GET['action']) && ($_GET['action'] == 'modifier' || $_GET['action'] == 'créer')) :
+	?>
+	<form action="#" method="post">
 
-?>
-<form action="#" method="post">
+		<div class="formulaireGauche col-md-6">
+			<input type="hidden" id="id_membre" name="id_membre" value="<?php echo $membre_actuel['id_membre'] ?? 0; ?>" >
 
-	<div class="formulaireGauche col-md-6">
-		<input type="hidden" id="id_membre" name="id_membre" value="<?php echo $membre_actuel['id_membre'] ?? 0; ?>" >
+			<label for="pseudo">Pseudo</label><br>
+			<input type="text" id="pseudo" name="pseudo" <?php 
+			if (isset($membre_actuel['pseudo'])){
+				echo 'value="'. $membre_actuel['pseudo'].'"'; 
+			} else {
+				echo 'placeholder="Pseudo du membre"';
+			}?>><br><br>
 
-		<label for="pseudo">Pseudo</label><br>
-		<input type="text" id="pseudo" name="pseudo" <?php 
-		if (isset($membre_actuel['pseudo'])){
-			echo 'value="'. $membre_actuel['pseudo'].'"'; 
-		} else {
-			echo 'placeholder="Pseudo du membre"';
-		}?>><br><br>
+			<label for="mdp">Mot de passe</label><br>
+			<input type="password" id="mdp" name="mdp" placeholder="Mot de passe membre"><br><br>
 
-		<label for="mdp">Mot de passe</label><br>
-		<input type="password" id="mdp" name="mdp" placeholder="Mot de passe membre"><br><br>
+			<label for="nom">Nom</label><br>
+			<input type="text" id="nom" name="nom" <?php 
+			if (isset($membre_actuel['nom'])){
+				echo 'value="'. $membre_actuel['nom'].'"'; 
+			} else {
+				echo 'placeholder="Nom du membre"';
+			}?>><br><br>
 
-		<label for="nom">Nom</label><br>
-		<input type="text" id="nom" name="nom" <?php 
-		if (isset($membre_actuel['nom'])){
-			echo 'value="'. $membre_actuel['nom'].'"'; 
-		} else {
-			echo 'placeholder="Nom du membre"';
-		}?>><br><br>
+			<label for="prenom">Prenom</label><br>
+			<input type="text" id="prenom" name="prenom" <?php 
+			if (isset($membre_actuel['prenom'])){
+				echo 'value="'. $membre_actuel['prenom'].'"'; 
+			} else {
+				echo 'placeholder="Prenom du membre"';
+			}?>><br><br>
+		</div>
 
-		<label for="prenom">Prenom</label><br>
-		<input type="text" id="prenom" name="prenom" <?php 
-		if (isset($membre_actuel['prenom'])){
-			echo 'value="'. $membre_actuel['prenom'].'"'; 
-		} else {
-			echo 'placeholder="Prenom du membre"';
-		}?>><br><br>
-	</div>
+		<div class="formulaireDroit col-md-6">
+			<label for="email">Email</label><br>
+			<input type="email" id="email" name="email" <?php 
+			if (isset($membre_actuel['email'])){
+				echo 'value="'. $membre_actuel['email'].'"'; 
+			} else {
+				echo 'placeholder="email du membre"';
+			}?>><br><br>
 
-	<div class="formulaireDroit col-md-6">
-		<label for="email">Email</label><br>
-		<input type="email" id="email" name="email" <?php 
-		if (isset($membre_actuel['email'])){
-			echo 'value="'. $membre_actuel['email'].'"'; 
-		} else {
-			echo 'placeholder="email du membre"';
-		}?>><br><br>
+			<label for="civilite">Civilité</label><br>
+			<select name="civilite" id="civilite">
+				<option value="m">Homme</option>
+				<option value="f" 
+				<?php if (isset($membre_actuel['civilite']) && $membre_actuel['civilite'] == 'f') echo'selected';?>
+				>Femme</option>
+			</select><br><br>
 
-		<label for="civilite">Civilité</label><br>
-		<select name="civilite" id="civilite">
-			<option value="m">Homme</option>
-			<option value="f" 
-			<?php if (isset($membre_actuel['civilite']) && $membre_actuel['civilite'] == 'f') echo'selected';?>
-			>Femme</option>
-		</select><br><br>
+			<label for="statut">Statut</label><br>
+			<select name="statut" id="statut">
+				<option value="0">Membre</option>
+				<option value="1" 
+				<?php 
+				if (isset($membre_actuel['statut']) && $membre_actuel['statut'] == '1') echo'selected';
+				?>
+				>Admin</option>
+			</select><br><br>
 
-		<label for="statut">Statut</label><br>
-		<select name="statut" id="statut">
-			<option value="0">Membre</option>
-			<option value="1" 
-			<?php 
-			if (isset($membre_actuel['statut']) && $membre_actuel['statut'] == '1') echo'selected';
-			?>
-			>Admin</option>
-		</select><br><br>
+			<input type="submit" class="btn" value="Enregistrer">
+		</div>
+	</form>
 
-		<input type="submit" class="btn" value="Enregistrer">
-	</div>
-</form>
-
-<?php
-
+	<?php
+endif;
 require_once('../inc/bas.inc.php');
 

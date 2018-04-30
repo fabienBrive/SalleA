@@ -47,7 +47,28 @@ $( function() {
     $('#note').barrating({
     theme: 'fontawesome-stars'
     });
-   
+
+    // 3 - fonction callback
+        function reponse(retourPHP) {
+            $("#selection").html(retourPHP); // On affiche le HTML envoyé en réponse par le serveur
+        }
+
+    // 1 - fonction d'envoie de la requête au serveur en AJAX :
+        function envoi_ajax() {
+            var donnees = $('form').serialize(); // transforme les données du formulaire en string avant envoi vers le serveur en AJAX, string formaté pour pouvoir remplir l'array $_POST automatiquement.
+console.log(donnees);
+            $.post('selection.php', donnees, reponse, 'html');
+            /* idem que pour $.get() il y a 4 arguments :
+                    - url de destination
+                    - données envoyées (objet OU string)
+                    - callback de traitement de la réponse serveur,
+                    - format de retour = on atttend du HTML */
+        }
+
+    // 2 - appel de notre fonction :
+        envoi_ajax(); // pour afficher tou de suite tous les produits disponibles
+        $("form").change(envoi_ajax); // Si les valeurs du formulaire changent, on appelle de nouveau la fonction pour mettre a jour la selection
+
 
 });
 </script>

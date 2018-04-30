@@ -27,118 +27,28 @@ $r = executeRequete("SELECT DISTINCT ville FROM salle");
 // Selecteur capacité
 
     $c_gauche .= '<label for="capacite"><h3>Capacité</h3></label><br>';
-    $c_gauche .= '<select name="capacite">';
+    $c_gauche .= '<select name="capacite[]">';
 for ($i = 25; $i > 0; $i-- ) {
         $c_gauche .= '<option>'. $i*10 .'</option>';
 }
     $c_gauche .= '</select><br><br>';
 
 // Selecteur de prix 
-    $c_gauche .= '<label><h3>Prix</h3></label><br><br>';
-    $c_gauche .= '<input type="hidden" class="input" name="prix" value="1000" /><br><br>';
+    $c_gauche .= '<label for="prix"><h3>Prix</h3></label><br><br>';
+    $c_gauche .= '<input type="hidden" class="input" name="prix[]" value="1000" /><br><br>';
 
 // Selecetion période :
     $c_gauche .= '<h3>Période</h3><br>';
 
         $c_gauche .= '<label for="date_depart"><h4>Date d\'arrivée</h4></label><br>';
-        $c_gauche .= '<input type="text" class="datepicker" name="date_arrivee" id="date_arrivee" placeholder="date d\'arrivée"><br><br>';
+        $c_gauche .= '<input type="text" class="datepicker" name="date_arrivee[]" id="date_arrivee" placeholder="date d\'arrivée"><br><br>';
 
         $c_gauche .= '<label for="date_arrivee"><h4>Date de départ</h4></label><br>';
-        $c_gauche .= '<input type="text" class="datepicker" name="date_depart" id="date_depart" placeholder="date de départ"><br><br>';
+        $c_gauche .= '<input type="text" class="datepicker" name="date_depart[]" id="date_depart" placeholder="date de départ"><br><br>';
 
-    $c_gauche .= '<input type="submit" value="Rechercher" class="btn"><br><br>';
+    //$c_gauche .= '<input type="submit" value="Rechercher" class="btn"><br><br>';
 
-// 2 - Affichage des produits séléctionnés :
 
-$categorie = true;
-$ville = true;
-$prixMin = true;
-$prixMax = true;
-$capacite = true;
-$compteur = 0;
-$date_arrivee = true;
-$date_depart = true;
-$date_jour = date("Y-m-d");
-
-if(isset($_POST)) {
-
-    if (isset($_POST['categorie'])) {
-        $categorie = "categorie IN ('". implode("','", $_POST['categorie']) ."')";
-    } 
-    if (isset($_POST['ville'])) {
-        $ville = "ville IN ('". implode("','", $_POST['ville']) ."')"; 
-    } 
-    if (isset($_POST['prix'])) { // 2 valeurs de prix avec mon range que je met dans un tableau grace a la fonction explode
-        $prix = explode(',', $_POST['prix']);
-        $prixMin = 'prix >= '. $prix[0];
-        $prixMax = 'prix <= '. $prix[1];
-    }
-    if (isset($_POST['capacite'])) {
-        $capacite = 'capacite <= '. $_POST['capacite'];
-    }
-    if (isset($_POST['date_arrivee'])){ // Si date arrivée existe alors si elle est plus importante que la date du jour alors on la prend en compte sinon elle vaut true
-        if ($_POST['date_arrivee'] >= $date_jour){
-            $date_arrivee = new DateTime($_POST['date_arrivee']);
-            $date_arrivee = $date_arrivee->format('Y-m-d');
-            $date_arrivee = 'date_arrivee >= "'. $date_arrivee . '"';
-        } else {
-            $date_arrivee = true;
-            //$c .= '<div class="bg-warning"> Attention vos dates sont incorrectes.</div>';
-        }
-    }
-    if (isset($_POST['date_depart'])){
-        if ($_POST['date_depart'] > $_POST['date_arrivee']){
-            $date_depart = new DateTime($_POST['date_depart']);
-            $date_depart = $date_depart->format('Y-m-d');
-            $date_depart = 'date_depart <= "'. $date_depart . '"';
-        } else {
-            $date_depart = true;
-            //$c .= '<div class="bg-warning"> Attention vos dates sont incorrectes.</div>';
-        }
-    }
-
-    //debug($date_arrivee);
-    //debug($date_depart);
-    
-    $r = executeRequete("SELECT CURRENT_DATE AS date_jour, s.id_salle, s.titre, s.description, s.photo, s.ville, s.categorie, s.capacite, p.prix, p.date_arrivee, p.date_depart, p.id_produit FROM produit p, salle s WHERE s.id_salle = p.id_salle AND p.etat = 'libre' AND $categorie AND $ville AND $prixMin AND $prixMax AND $capacite AND $date_arrivee AND $date_depart ");
-   
-    //debug($r);
-    //debug(date("Y-m-d"));
-    $res = executeRequete("SELECT id_salle, ROUND(AVG(note),2) AS note_moyenne FROM avis GROUP BY id_salle");
-    $noteSalle = $res->fetch(PDO::FETCH_ASSOC);
-    debug($noteSalle);
-
-    while($produit_boutique = $r->fetch(PDO::FETCH_ASSOC)){
-
-        if($produit_boutique['date_arrivee'] >= $produit_boutique['date_jour']){ // affichage du produit à la condition que la date de d'arrivée du produit est supérieur ou égale à la date du jour
-
-        $date_arrivee = new DateTime($produit_boutique['date_arrivee']);
-        $date_arrivee = $date_arrivee->format('d-m-Y'); // je passe par un objet datetime() pour transformer mon affichage de la date en date timetamps  puis le changer de format ici le passer en format affichage (différent du format de la base de donnée)
-
-        $date_depart = new DateTime($produit_boutique['date_depart']);
-        $date_depart = $date_depart->format('d-m-Y');
-
-        $c_droit .= '<div class="col-md-4">';//div par produit
-            $c_droit .= '<img src="'. $produit_boutique['photo'] .'" title="'. $produit_boutique['titre'] .'" alt="'. $produit_boutique['titre'] .'"height="175" width="250"><br>';//image
-            $c_droit .= '<h3>'. $produit_boutique['titre'] .'</h3>';//titre
-            $c_droit .= '<h4>'. $produit_boutique['prix'] .' €</h4>';//prix
-            $c_droit .= '<p>'. $produit_boutique['description'] .'</p>';//descriptif
-            $c_droit .= '<p>'. $date_arrivee .' au '. $date_depart .'</p><br>';//période
-            $c_droit .= '<div class="col-md-4">
-                            <div class="star-ratings-css">
-                                <div class="star-ratings-css-top" style="width:'. $noteSalle[$id_salle] * 20 .'%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-                                <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-                            </div>
-                        </div>';//note
-            $c_droit .= '<a href="front/ficheProduit.php?id_produit='. $produit_boutique['id_produit'] .'" >Voir details</a><br><br>';//lien voir
-        $c_droit .= '</div>';
-
-        $compteur++;
-        }
-    } // fin du while
-} // fin affichage produit
-
-$c_gauche .= '<p>'. $compteur .' résultats</p>';
 
 // ----------------------- AFFICHAGE ----------------------------------------
 
@@ -151,13 +61,40 @@ echo $c;
 echo $c_gauche;
 ?>
 </form>    
-<div class="col-md-9">
+<div class="col-md-9" id="selection">
 <?php 
 echo $c_droit;
 ?>
 </div>
 <a href="">Voir plus</a>
 
+
+<script>
+    $(function(){
+
+    // 3 - fonction callback
+        function reponse(retourPHP) {
+            $("#selection").html(retourPHP); // On affiche le HTML envoyé en réponse par le serveur
+        }
+
+    // 1 - fonction d'envoie de la requête au serveur en AJAX :
+        function envoi_ajax() {
+            var donnees = $('form').serialize(); // transforme les données du formulaire en string avant envoi vers le serveur en AJAX, string formaté pour pouvoir remplir l'array $_POST automatiquement.
+
+            $.post('selectionAjax.php', donnees, reponse, 'html');
+            /* idem que pour $.get() il y a 4 arguments :
+                    - url de destination
+                    - données envoyées (objet OU string)
+                    - callback de traitement de la réponse serveur,
+                    - format de retour = on atttend du HTML */
+        }
+
+    // 2 - appel de notre fonction :
+        envoi_ajax(); // pour afficher tout de suite tous les produits disponibles
+        $("form").change(envoi_ajax); // Si les valeurs du formulaire changent, on appelle de nouveau la fonction pour mettre a jour la selection
+
+    }); // Fin du document ready 
+</script>
 
 <?php
 

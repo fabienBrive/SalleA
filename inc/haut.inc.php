@@ -52,7 +52,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
 
-                    <li class="navbar-link"><a href="#" title="Lien actif">Contact</a></li>
+                    <li class="navbar-link"><a href="<?php echo RACINE_SITE_FRONT .'contact.php'; ?>" title="Lien actif">Contact</a></li>
 
                     <?php
                          if (internauteEstConnecte()){

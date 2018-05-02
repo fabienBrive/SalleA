@@ -39,7 +39,7 @@ $result  = executeRequete("SELECT ROUND(AVG(note),2) AS noteSalle FROM avis WHER
                 ':id_salle' => $ficheProduit['id_salle']
 ));
 $noteSalle = $result->fetch(PDO::FETCH_ASSOC);
-debug($noteSalle);
+//debug($noteSalle);
 
 //Requete pour affichage des produits similaires :
 $res = executeRequete("SELECT p.id_produit, s.photo FROM salle s, produit p WHERE s.id_salle = p.id_salle AND s.ville = :ville AND p.id_produit NOT LIKE :id_produit ORDER BY RAND( ) LIMIT 4",
@@ -108,14 +108,16 @@ require_once('../inc/haut.inc.php');
         <div class="col-md-4">
             <h2><?php echo $ficheProduit['titre'] ?></h2>
         </div>
-
-        <div class="col-md-4">
-            <div class="star-ratings-css">
-                <div class="star-ratings-css-top" style="width: <?php echo $noteSalle['noteSalle'] * 20; ?>%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-                <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <?php if(!empty($noteSalle['noteSalle'])):?>
+            <div class="col-md-4">
+                <div class="star-ratings-css">
+                    <div class="star-ratings-css-top" style="width: <?php echo $noteSalle['noteSalle'] * 20; ?>%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                    <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                </div>
             </div>
-        </div>
-
+        <?php else: ?>
+            <p>Pas encore de note pour cette salle</p>
+        <?php endif; ?>
         <div class="col-md-4">
             <?php if (internauteEstConnecte()){
                 echo '<form method="post" action="#">';

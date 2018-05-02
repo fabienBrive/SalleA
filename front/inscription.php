@@ -75,37 +75,47 @@ require_once('../inc/haut.inc.php');
 echo $c;
 ?>
 
-<h3>S'inscrire</h3>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-<form method="post" action=""> <!-- On passe tous ce formulaire en POST-->
+            <div class="modal-header">
+                <h3 class="modal-title">S'inscrire</h3>
+            </div>
 
-	<label for="pseudo"></label>
-	<input type="text" name="pseudo" id="pseudo" placeholder="Votre pseudo" value="<?php echo $_POST['pseudo'] ?? ''; ?>"><br><br>
-    <!-- nouvelle fonction de php7 le chainage avec ??, pour remplir le champ en value on met la valeur enregistrée dans le POST ou un champ vide '' le chainage selectionne dans la liste la première valeur existante. -->
+            <div class="modal-body">
+                <form method="post" action=""> <!-- On passe tous ce formulaire en POST-->
 
-	<label for="mdp"></label>
-	<input type="password" id="mdp" name="mdp" placeholder="Votre mot de passe" value="<?php echo $_POST['mdp'] ?? ''; ?>"><br><br>
+                    <label for="pseudo"></label>
+                    <input type="text" name="pseudo" id="pseudo" placeholder="Votre pseudo" value="<?php echo $_POST['pseudo'] ?? ''; ?>"><br><br>
+                    <!-- nouvelle fonction de php7 le chainage avec ??, pour remplir le champ en value on met la valeur enregistrée dans le POST ou un champ vide '' le chainage selectionne dans la liste la première valeur existante. -->
 
-	<label for="prenom"></label>
-	<input type="text" id="prenom" name="prenom" placeholder="Votre prénom" value="<?php echo $_POST['prenom'] ?? ''; ?>"><br><br>
+                    <label for="mdp"></label>
+                    <input type="password" id="mdp" name="mdp" placeholder="Votre mot de passe" value="<?php echo $_POST['mdp'] ?? ''; ?>"><br><br>
 
-	<label for="nom"></label>
-	<input type="text" id="nom" name="nom" placeholder="Votre nom" value="<?php echo $_POST['nom'] ?? ''; ?>"><br><br>
+                    <label for="prenom"></label>
+                    <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" value="<?php echo $_POST['prenom'] ?? ''; ?>"><br><br>
 
-	<label for="email"></label>
-	<input type="text" id="email" name="email" placeholder=" votre email" value="<?php echo $_POST['email'] ?? ''; ?>"><br><br>
+                    <label for="nom"></label>
+                    <input type="text" id="nom" name="nom" placeholder="Votre nom" value="<?php echo $_POST['nom'] ?? ''; ?>"><br><br>
 
-    <label></label>
-    <select name="civilite" id="">
-        <option value="m">Homme</option>
-        <option value="f" <?php if (isset($_POST['civilite']) && $_POST['civilite'] == 'f') echo 'selected'; ?> >Femme</option> 
-    </select> <br><br>
+                    <label for="email"></label>
+                    <input type="text" id="email" name="email" placeholder=" votre email" value="<?php echo $_POST['email'] ?? ''; ?>"><br><br>
 
-	<input type="submit" name="inscription" value="inscription" class="btn">
+                    <label></label>
+                    <select name="civilite" id="">
+                        <option value="m">Homme</option>
+                        <option value="f" <?php if (isset($_POST['civilite']) && $_POST['civilite'] == 'f') echo 'selected'; ?> >Femme</option> 
+                    </select> <br><br>
 
+                    <input type="submit" name="inscription" value="inscription" class="btn">
+                </form>
+            </div>
 
+        </div>
+    </div>
+</div>
 
-</form>
 
 <?php
 

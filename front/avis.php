@@ -26,7 +26,7 @@ if (isset($_GET['id_produit'])) { // Je vais chercher les infos du produit en ba
     $c .= '<p><span>Ville : </span>'. $detailsProduit['ville'] .'</p>';
     $c .= '<p><span>Catégorie : </span>'. $detailsProduit['categorie'] .'</p>';
     $c .= '<p><span>Prix : </span>'. $detailsProduit['prix'] .' €</p>';
-    $c .= '<img src="../'. $detailsProduit['photo'] .'" alt="photo salle">';
+    $c .= '<img class="img-responsive" width="100%" src="../'. $detailsProduit['photo'] .'" alt="photo salle">';
     }
 
 } else {
@@ -62,30 +62,49 @@ if ($_POST){ // Si mon post est rempli j'envoie les produits en BDD
 
 require_once('../inc/haut.inc.php');
 
-echo $c; // aprés mon affichage des caractéristiques produit j'affiche mon formulaire de commentaire (avec note étoile)
 ?>
 <div class="col-md-12">
-    <h3>Formulaire</h3>
-    <form method="post">
 
-        <label for="id_membre"></label>
-        <input type="hidden" id="id_membre" name="id_membre" value="<?php echo $_SESSION['membre']['id_membre'] ?>">
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-        <label for="note">Note du produit</label><br>
-            <select name="note" id="note">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select><br>
+            <div class="modal-header">
+                <h3 class="modal-title">Formulaire</h3>
+            </div>
 
-        <label for="commentaire">Commentaire</label><br>
-        <textarea name="commentaire" id="commentaire" cols="60" rows="5" placeholder="Ici votre commentaire"></textarea><br><br>
+            <div class="modal-body">
+                <div>
+                    <?php echo $c; // aprés mon affichage des caractéristiques produit j'affiche mon formulaire de commentaire (avec note étoile) ?>
+                </div>
 
-        <input type="submit" value="envoyer">
+                <form method="post">
 
-    </form>
+                    <label for="id_membre"></label>
+                    <input type="hidden" id="id_membre" name="id_membre" value="<?php echo $_SESSION['membre']['id_membre'] ?>">
+
+                    <label for="note">Note du produit</label><br>
+                        <select name="note" id="note">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select><br>
+
+                    <label for="commentaire">Commentaire</label><br>
+                    <textarea name="commentaire" id="commentaire" cols="60" rows="5" placeholder="Ici votre commentaire"></textarea><br><br>
+
+                    <input type="submit" value="envoyer">
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+    
+ 
 </div>
 
 

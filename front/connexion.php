@@ -68,9 +68,33 @@ require_once( '../inc/haut.inc.php');
 
 echo $c;
 ?>
-<h3>Se Connecter</h3>
 
-<form method="post" action="">
+<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+            <div class="modal-header">
+				<h3 class="modal-title">Se Connecter</h3>
+			</div>
+
+            <div class="modal-body">
+                <form method="post" action="">
+                    <label for="pseudo"></label><br>
+                    <input type="text" name="pseudo" id="pseudo" placeholder="Votre pseudo"><br><br>
+
+                    <label for="mdp"></label><br>
+                    <input type="password" name="mdp" id="mdp" placeholder="Votre mot de passe"><br><br>
+
+                    <input type="submit" value="Connexion" class="btn">
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- <form method="post" action="">
 	
 	<label for="pseudo"></label><br>
 	<input type="text" name="pseudo" id="pseudo" placeholder="Votre pseudo"><br><br>
@@ -80,7 +104,7 @@ echo $c;
 
 	<input type="submit" value="Connexion" class="btn">
 
-</form>
+</form> -->
 
 <?php
 

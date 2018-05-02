@@ -10,7 +10,7 @@ if (!internauteEstConnecteEtEstAdmin()) {
 	header('location:../connexion.php');
 	exit();
 }
-$r = executeRequete("SELECT c.id_commande, c.id_membre, m.email, c.id_produit, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix, DATE_FORMAT(c.date_enregistrement, '%d-%m-%Y %H:%i') AS date_enregistrement FROM commande c, produit p, membre m WHERE m.id_membre = c.id_membre AND p.id_produit = C.id_produit");
+$r = executeRequete("SELECT c.id_commande, c.id_membre, m.email, c.id_produit, DATE_FORMAT(p.date_arrivee, '%d-%m-%Y') AS date_arrivee, DATE_FORMAT(p.date_depart, '%d-%m-%Y') AS date_depart, p.prix, DATE_FORMAT(c.date_enregistrement, '%d-%m-%Y %H:%i') AS date_enregistrement FROM commande c, produit p, membre m WHERE m.id_membre = c.id_membre AND p.id_produit = c.id_produit");
 
 // En-têtes en dur :
 $c .= '<table class="table">';

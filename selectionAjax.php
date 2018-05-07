@@ -85,7 +85,7 @@ if(isset($_POST)) {
             $c_droit .= '<img src="'. $produit_boutique['photo'] .'" title="'. $produit_boutique['titre'] .'" alt="'. $produit_boutique['titre'] .'"height="175" width="250"><br>';//image
             $c_droit .= '<h3>'. $produit_boutique['titre'] .'</h3>';//titre
             $c_droit .= '<h4>'. $produit_boutique['prix'] .' €</h4>';//prix
-            $c_droit .= '<p>'. substr($produit_boutique['description'], 0, 70) .'...</p>';//descriptif
+            $c_droit .= '<p>'. substr($produit_boutique['description'], 0, 30) .'...</p>';//descriptif
             $c_droit .= '<p>'. $date_arrivee .' au '. $date_depart .'</p>';
             //période
          

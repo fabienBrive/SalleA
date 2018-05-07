@@ -152,7 +152,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'modifier' || $_GET['action'] 
 
         <!-- on insère en iden l'id du produit bien que autoincrémenté et non modifiable pour le récupérer dans le post et traiter les infos aprés -->
         <?php if(isset($produit_actuel['id_produit'])){
-            echo'<input type="hidden" id="id_produit" name="id_produit" value="<?php echo $produit_actuel[id_produit]?>" >';
+            echo '<input type="hidden" id="id_produit" name="id_produit" value="' . $produit_actuel['id_produit'] . '" >';
         } ?>
         
         <?php //debug($_POST); ?>

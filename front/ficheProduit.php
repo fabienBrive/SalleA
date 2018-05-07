@@ -53,7 +53,7 @@ while ($p_similaire = $res->fetch(PDO::FETCH_ASSOC)){
 
  	//debug($resultat_suggestion);
  	$suggestion .= '<div class="col-md-3"> 
- 					<a href="?id_produit='. $p_similaire['id_produit'] .'"><img src="../'. $p_similaire['photo'] .'"  class="img-responsive"></a>
+ 					<a href="?id_produit='. $p_similaire['id_produit'] .'"><img height="150" width="250" src="../'. $p_similaire['photo'] .'"></a>
  					</div>';
 }
 

@@ -28,8 +28,8 @@ $r = executeRequete("SELECT DISTINCT ville FROM salle");
 
     $c_gauche .= '<label for="capacite"><h3>Capacité</h3></label><br>';
     $c_gauche .= '<select name="capacite[]">';
-for ($i = 25; $i > 0; $i-- ) {
-        $c_gauche .= '<option>'. $i*10 .'</option>';
+for ($i = 30; $i > 0; $i-- ) {
+        $c_gauche .= '<option>'. $i*5 .'</option>';
 }
     $c_gauche .= '</select><br><br>';
 
